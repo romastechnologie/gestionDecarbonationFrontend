@@ -14,7 +14,6 @@
             <h5 class="mb-0">#{{ activity.id.substring(0, 8).toUpperCase() }}</h5>
           </div>
           <div class="d-flex gap-2">
-            <span :class="modeBadgeClass">{{ activity.mode }}</span>
             <span :class="statusBadgeClass">{{ activity.status }}</span>
           </div>
         </div>
@@ -77,7 +76,6 @@
           <div class="row">
             <div class="col-md-3"><label class="text-muted fs-12">Masse cargo</label><p class="fw-semibold">{{ activity.cargoMassT != null ? activity.cargoMassT + ' T' : '—' }}</p></div>
             <div class="col-md-3"><label class="text-muted fs-12">Distance</label><p class="fw-semibold">{{ activity.distanceKm != null ? activity.distanceKm + ' km' : '—' }}</p></div>
-            <div class="col-md-3"><label class="text-muted fs-12">Type carburant</label><p class="fw-semibold">{{ activity.fuelType ?? '—' }}</p></div>
             <div class="col-md-3"><label class="text-muted fs-12">Masse carburant</label><p class="fw-semibold">{{ activity.fuelMassT != null ? activity.fuelMassT + ''+ activity.fuelMassUnit : '—' }}</p></div>
           </div>
         </div>

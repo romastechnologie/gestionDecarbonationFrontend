@@ -150,21 +150,6 @@
               <ErrorMessage name="distanceKm" class="text-danger" />
             </div>
           </div>
-
-          <!-- Type de carburant -->
-          <div class="col-md-6">
-            <div class="form-group mb-15 mb-sm-20 mb-md-25">
-              <label class="d-block text-black fw-semibold mb-10">Type de carburant</label>
-              <Field
-                name="fuelType"
-                type="text"
-                class="form-control shadow-none fs-md-15 text-black"
-                placeholder="Entrer le type de carburant"
-              />
-              <ErrorMessage name="fuelType" class="text-danger" />
-            </div>
-          </div>
-
           <!-- Masse carburant + Unité -->
           <div class="col-md-6">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
@@ -221,7 +206,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, nextTick } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as Yup from 'yup';
 import Multiselect from '@vueform/multiselect';
@@ -256,7 +241,6 @@ export default defineComponent({
         .min(Yup.ref('periodStart'), 'La date de fin doit être après la date de début'),
       cargoMassT: Yup.number().nullable().typeError('Valeur numérique invalide'),
       distanceKm: Yup.number().nullable().typeError('Valeur numérique invalide'),
-      fuelType: Yup.string().nullable(),
       fuelMassT: Yup.number().nullable().typeError('Valeur numérique invalide'),
       fuelMassUnit: Yup.string().nullable(),
     });
@@ -281,7 +265,7 @@ export default defineComponent({
         }));
 
         const activity = actRes.data.data;
-
+        await nextTick();
         // Formater les dates pour datetime-local (format: "YYYY-MM-DDTHH:mm")
         const formatForDatetimeLocal = (val: string | null): string => {
           if (!val) return '';
@@ -324,7 +308,6 @@ export default defineComponent({
           periodEnd:          formatDatetime(payload.periodEnd),
           cargoMassT:         payload.cargoMassT  ? Number(payload.cargoMassT)  : undefined,
           distanceKm:         payload.distanceKm  ? Number(payload.distanceKm)  : undefined,
-          fuelType:           payload.fuelType,
           fuelMassT:          payload.fuelMassT   ? Number(payload.fuelMassT)   : undefined,
           fuelMassUnit:       payload.fuelMassUnit ?? undefined,
           installationFromId: payload.installationFromId,

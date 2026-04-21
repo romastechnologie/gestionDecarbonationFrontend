@@ -63,6 +63,22 @@
               <ErrorMessage name="typeMoteur" class="text-danger" />
             </div>
           </div>
+         <!-- Type de carburant -->
+        <div class="col-md-6">
+          <div class="form-group mb-15 mb-sm-20 mb-md-25">
+            <label class="d-block text-black fw-semibold mb-10">Type de carburant</label>
+            <Field name="fuelType" v-slot="{ field }">
+              <Multiselect
+                :searchable="true"
+                :options="fuelTypeOptions"
+                v-model="field.value"
+                v-bind="field"
+                placeholder="Sélectionner le type de carburant"
+              />
+            </Field>
+            <ErrorMessage name="fuelType" class="text-danger" />
+          </div>
+        </div>
 
           <!-- Date de mise en production -->
           <div class="col-md-6">
@@ -124,7 +140,13 @@ import { error, success } from '@/utils/utils';
 import { useRouter, useRoute } from 'vue-router';
 
 const KNOWN_TYPES = ['NAVIRE', 'AVION', 'AUTRES'];
-
+const fuelTypeOptions = [
+  'Essence',
+  'Gazole (Diesel)',
+  'Kérosène',
+  'GPL (Gaz de Pétrole Liquéfié)',
+  'Fioul lourd',
+];
 export default defineComponent({
   name: 'EditTransportAsset',
   components: { Form, Field, ErrorMessage, Multiselect },
@@ -147,6 +169,7 @@ export default defineComponent({
       DateMiseProduction: Yup.date().nullable().typeError('La date est invalide'),
       name: Yup.string().nullable(),
       ownerName: Yup.string().nullable(),
+      fuelType: Yup.string().nullable(),
     });
 
     const onTypeChange = (val: string) => {
@@ -226,6 +249,7 @@ export default defineComponent({
       isLoading,
       onTypeChange,
       updateTransportAsset,
+      fuelTypeOptions
     };
   },
 });

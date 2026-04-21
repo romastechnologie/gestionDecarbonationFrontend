@@ -4,25 +4,6 @@
       <Form ref="activityForm" @submit="addActivity" :validation-schema="activitySchema">
         <div class="row">
 
-          <!-- Mode -->
-          <div class="col-md-6">
-            <div class="form-group mb-15 mb-sm-20 mb-md-25">
-              <label class="d-block text-black fw-semibold mb-10">
-                Mode <span class="text-danger">*</span>
-              </label>
-              <Field name="mode" v-slot="{ field }">
-                <Multiselect
-                  :searchable="true"
-                  :options="modeOptions"
-                  v-model="field.value"
-                  v-bind="field"
-                  placeholder="Sélectionner le mode"
-                />
-              </Field>
-              <ErrorMessage name="mode" class="text-danger" />
-            </div>
-          </div>
-
           <!-- Installation Source -->
           <div class="col-md-6">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
@@ -132,20 +113,6 @@
             </div>
           </div>
 
-          <!-- Type de carburant -->
-          <div class="col-md-6">
-            <div class="form-group mb-15 mb-sm-20 mb-md-25">
-              <label class="d-block text-black fw-semibold mb-10">Type de carburant</label>
-              <Field
-                name="fuelType"
-                type="text"
-                class="form-control shadow-none fs-md-15 text-black"
-                placeholder="Entrer le type de carburant"
-              />
-              <ErrorMessage name="fuelType" class="text-danger" />
-            </div>
-          </div>
-
           <div class="col-md-6">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
               <label class="d-block text-black fw-semibold mb-10">Masse carburant</label>
@@ -222,7 +189,7 @@ export default defineComponent({
     const transportOptions = ref<{ label: string; value: string }[]>([]);
 
     const activitySchema = Yup.object().shape({
-      mode: Yup.string().required('Le mode est obligatoire'),
+      
       installationFromId: Yup.string().nullable(),
       installationToId: Yup.string().nullable(),
       transportAssetId: Yup.string().nullable(),
@@ -233,7 +200,6 @@ export default defineComponent({
         .min(Yup.ref('periodStart'), 'La date de fin doit être après la date de début'),
       cargoMassT: Yup.number().nullable().typeError('Valeur numérique invalide'),
       distanceKm: Yup.number().nullable().typeError('Valeur numérique invalide'),
-      fuelType: Yup.string().nullable(),
       fuelMassT: Yup.number().nullable().typeError('Valeur numérique invalide'),
       fuelMassUnit: Yup.string().nullable(),
     });
@@ -276,12 +242,10 @@ export default defineComponent({
         };
 
         const finalPayload = {
-          mode: payload.mode,
           periodStart: formatDatetime(payload.periodStart),
           periodEnd: formatDatetime(payload.periodEnd),
           cargoMassT: payload.cargoMassT ? Number(payload.cargoMassT) : undefined,
           distanceKm: payload.distanceKm ? Number(payload.distanceKm) : undefined,
-          fuelType: payload.fuelType,
           fuelMassT: payload.fuelMassT ? Number(payload.fuelMassT) : undefined,
           fuelMassUnit: payload.fuelMassUnit ?? undefined,
           installationFromId: payload.installationFromId,

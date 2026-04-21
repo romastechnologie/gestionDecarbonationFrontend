@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted,nextTick } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as Yup from 'yup';
 import Multiselect from '@vueform/multiselect';
@@ -178,7 +178,7 @@ export default defineComponent({
 
         const installation = instRes.data.data;
         const currentType = installation.type;
-
+        await nextTick();
         // Si le type en base n'est pas dans la liste connue → c'est un type custom
         if (currentType && !KNOWN_TYPES.includes(currentType)) {
           selectedType.value = 'AUTRES';

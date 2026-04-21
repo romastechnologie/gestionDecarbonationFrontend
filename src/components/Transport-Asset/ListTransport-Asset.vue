@@ -49,6 +49,9 @@
                 Type de moteur
               </th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
+                Type de carburant
+              </th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
                 Nom
               </th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
@@ -77,6 +80,7 @@
               <td class="shadow-none lh-1 fw-medium">{{ transport.identifier }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.category ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.typeMoteur ?? '—' }}</td>
+              <td class="shadow-none lh-1 fw-medium">{{ transport.fuelType ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.name ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.ownerName ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">
@@ -159,6 +163,7 @@ interface TransportAsset {
   identifier: string;
   category: string | null;
   typeMoteur: string | null;
+  fuelType:string | null;
   DateMiseProduction: Date | null;
   name: string | null;
   ownerName: string | null;
