@@ -7,17 +7,7 @@
 
     <div class="map-controls boutonFlottante mb-3" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; flex-wrap: nowrap;">
       <!-- Select pour les zones de scannage -->
-      <Multiselect
-        v-model="selectedZoneIndex"
-        :options="zoneOptions"
-        :searchable="true"
-        :filter-results="true"
-        label="label"
-        mode="single"
-        placeholder="Sélectionner une zone de scannage..."
-        class="me-1 d-inline-block"
-        style="min-width: 200px; max-width: 260px;"
-      />
+     
 
       <!-- <div style="display: flex; flex-direction: column; min-width: 320px; max-width: 400px;"> -->
         <!-- <input 

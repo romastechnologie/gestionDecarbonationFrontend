@@ -1,72 +1,103 @@
 <template>
   <div class="row">
-    <div class="col-12 p-0">
-      <div class="card border-0 rounded-0 mb-0">
-        <div class="card-body p-0">
-          <div class="card-head box-shadow bg-white p-3">
-            <div class="d-lg-flex align-items-center justify-content-between mb-3">
-             
 
-            <!-- Liste des positions -->
-            <!-- <div v-if="mapMarkers.length > 0" class="mb-3">
-              <h6 class="text-muted small mb-2">POSITIONS ENREGISTRÉES</h6>
-              <div class="d-flex flex-wrap gap-2">
-                <div 
-                  v-for="(marker, index) in mapMarkers" 
-                  :key="index"
-                  class="badge bg-light text-dark border d-flex align-items-center gap-2 p-2"
-                >
-                  <i class="bi bi-geo-alt-fill" :style="{ color: marker.color, fontSize: '16px' }"></i>
-                  <div class="text-start">
-                    <div class="fw-bold" style="font-size: 0.85rem;">{{ marker.title }}</div>
-                    <small class="text-muted" style="font-size: 0.75rem;">
-                      {{ marker.lat.toFixed(4) }}, {{ marker.lng.toFixed(4) }}
-                    </small>
-                  </div>
+    <div class="col-12 d-flex p-0">
+
+      <div class="col-md-7">
+        <div class="card border-0 rounded-2 mb-0 shadow-sm m-3">
+            <div class="card-body d-flex align-items-center" 
+              style="background-image: url('./assets/images/img_princ.png'); background-size: contain; background-repeat: no-repeat; background-position: right center; min-height: 190px; width: 100%; position: relative;">
+              <div style="flex:1">
+                <div class="d-flex align-items-center mb-2">
+                  <h5 class="mb-0">Heureux de vous revoir !</h5>
                 </div>
               </div>
-            </div> -->
           </div>
+        </div>
+      </div>
 
-          <!-- Composant de carte -->
-          <div class="map-wrapper" :class="{ 'fullscreen-map': isFullscreen }" ref="mapContainer">
-            <!-- En-tête en plein écran -->
-            <div v-if="isFullscreen" class="fullscreen-header p-3 bg-white border-bottom">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <h5 class="mb-0">
-                    <i class="bi bi-geo-alt-fill text-success me-2"></i>
-                    {{ manifest?.navireNom }} - Port de Lomé
-                  </h5>
-                </div>
-                <button 
-                  @click="toggleFullscreen" 
-                  class="btn btn-danger btn-sm"
-                >
-                  <i class="bi bi-x-lg me-1"></i>
-                  Fermer plein écran
-                </button>
-              </div>
+      <div class="col-md-5">
+        <div class="card border-0 rounded-2 mb-0 shadow-sm m-3">
+          <div class="card-body p-0">
+            <div class="mb-0 p-3">
+              <h5 class="mb-0">Certificats délivrés par mois</h5>
             </div>
-            <!-- :special-circle="{ lat: 6.1366, lng: 1.2222, radius: 18520 }" -->
-            <Maps 
-              :show-lines="showLines"
-              :zee-bounds="zeeBounds"
-              :initial-zoom="13"
-              :initial-center="[6.076841, 1.302920]"
-              :show-z-e-e="showZEE"
-              :zee-geo-json="zeeGeoJson"
-              :markers="markers"
-              :zones-scannage="zonesScannage"
-              line-color="#198754"
-              :style="{ height: isFullscreen ? '100vh' : '600px' }"
-              @zone-changed="onZoneChanged"
+            <apexchart
+              type="bar"
+              height="120"
+              :options="certificatChartOptions"
+              :series="certificatChartSeries"
             />
           </div>
         </div>
       </div>
+
     </div>
-  </div>
+
+
+    <div class="col-12 d-flex p-0">
+
+      <div class="col-md-3">
+        <div class="card border-0 rounded-2 mb-0 shadow-sm m-3">
+          <div class="card-body">
+              <div class="d-flex align-items-center mb-2">
+                <i class="ph ph-leaf fs-30 text-success me-2"></i>
+                <h5 class="mb-0">Crédit généré</h5>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0 me-3 text-success">22</h3>
+                <h6 class="mb-0">Contrat</h6>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 rounded-2 mb-0 shadow-sm m-3">
+          <div class="card-body">
+              <div class="d-flex align-items-center mb-2">
+                <i class="ph ph-certificate fs-30 text-primary me-2"></i>
+                <h5 class="mb-0">Certificats émis</h5>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0 me-2 text-success">56</h3>
+                <h6 class="mb-0">Certificats</h6>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 rounded-2 mb-0 shadow-sm m-3">
+          <div class="card-body">
+              <div class="d-flex align-items-center mb-2">
+                <i class="ph ph-currency-dollar fs-30 text-success me-2"></i>
+                <h5 class="mb-0">Revenu générer</h5>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0 me-2 text-success">15.000.000</h3>
+                <h6 class="mb-0">Cette année</h6>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 rounded-2 mb-0 shadow-sm m-3">
+          <div class="card-body">
+              <div class="d-flex align-items-center mb-2">
+                <i class="ph ph-leaf fs-30 text-success me-2"></i>
+                <h5 class="mb-0">Émissions de CO2</h5>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0 me-2 text-success">1000</h3>
+                <h6 class="mb-0">Tonne de CO2</h6>
+              </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -78,11 +109,13 @@ import { useRoute, useRouter } from "vue-router";
 import { Manifest } from "@/models/Manifest";
 import Maps from "./StreetMaps.vue";
 import zeeGeoJson from '@/components/Dashboard/Ecommerce/zee.json';
+import ApexCharts from "vue3-apexcharts";
 
 export default defineComponent({
   name: "ManifestMap",
   components: {
-    Maps
+    apexchart: ApexCharts,
+    // Maps
   },
   setup: () => {
     const route = useRoute();
@@ -95,103 +128,19 @@ export default defineComponent({
 
   
 
-    const zeeBounds = {
-      minLat: 1.033,  // Min Latitude
-      maxLat: 6.202,  // Max Latitude
-      minLng: 1.033,  // Min Longitude
-      maxLng: 5.800   // Max Longitude
-    };
-
-    const zeeCenter = {
-      lat: 4.63949,
-      lng: 1.82135
-    };
+   
 
   
 
-    // const markers = computed(() => {
-    //   return [
-    //     ...vessels.value.map(v => ({
-    //       lat: v.lat,
-    //       lng: v.lon,
-    //       title: v.name,
-    //       description: v.type_specific || v.type,
-    //       color: '#007bff',
-    //       name: v.name,
-    //       mmsi: v.mmsi,
-    //       imo: v.imo,
-    //       type: v.type,
-    //       destination: v.destination,
-    //       speed: v.speed,
-    //       country_iso: v.country_iso,
-    //       eta_utc: v.eta_utc,
-    //       heading: v.heading
-    //     })),
-    //     // specialPoint
-    //   ];
-    // });
+   
 
-    // const markers = computed(() => {
-    //   return [
-    //     ...vesselsFromDatabase.value.map(v => ({
-    //       lat: v.voyages[0]?.trackings[0]?.latitude,
-    //       lng: v.voyages[0]?.trackings[0]?.longitude,
-    //       title: v.name,
-    //       description: v.type_specific || v.type,
-    //       color: '#007bff',
-    //       name: v.name,
-    //       mmsi: v.mmsi,
-    //       imo: v.imo,
-    //       type: v.type,
-    //       destination: v.destination,
-    //       speed: v.speed,
-    //       country_iso: v.country_iso,
-    //       eta_utc: v.eta_utc,
-    //       heading: v.voyages[0]?.trackings[0]?.heading
-    //     })),
-    //     // specialPoint
-    //   ];
-    // });
-
-    const markers = computed(() => {
-      return [
-        ...vessels.value.map(v => ({
-          lat: v.lat,
-          lng: v.lon,
-          title: v.name,
-          description: v.type_specific || v.type,
-          color: '#007bff',
-          name: v.name,
-          mmsi: v.mmsi,
-          imo: v.imo,
-          type: v.type,
-          destination: v.destination,
-          speed: v.speed,
-          country_iso: v.country_iso,
-          eta_utc: v.eta_utc,
-          heading: v.heading
-        })),
-        // specialPoint
-      ];
-    });
-
-    console.log("mon marqueurs", markers);
 
 
     const goBack = () => {
       router.back();
     };
 
-    const toggleFullscreen = () => {
-      isFullscreen.value = !isFullscreen.value;
-      if (isFullscreen.value && mapContainer.value) {
-        if (mapContainer.value.requestFullscreen) {
-          mapContainer.value.requestFullscreen();
-        }
-      } else if (document.fullscreenElement) {
-        document.exitFullscreen();
-      }
-    };
+   
 
 
     // --- Ajout : récupération des vessels et mapping markers ---
@@ -237,56 +186,79 @@ export default defineComponent({
       }
     }
 
-    // Nouvelle fonction pour initialiser la carte (appelée au montage et lors du changement de zone)
-    function initMap(zone = null) {
-      let targetZone = zone || zonesScannage[0];
-      fetchVessels(targetZone.lng, targetZone.lat);
-      // L'écouteur fullscreen ne doit être ajouté qu'une fois
-      if (!initMap.fullscreenListenerAdded) {
-        document.addEventListener('fullscreenchange', () => {
-          if (!document.fullscreenElement) {
-            isFullscreen.value = false;
-          }
-        });
-        initMap.fullscreenListenerAdded = true;
-      }
-    }
-    initMap.fullscreenListenerAdded = false;
+   
+    
 
-    // Handler pour le changement de zone
-    function onZoneChanged(zone) {
-      // zone = { lat, lng, radius }
-      initMap(zone);
-    }
+    // onMounted(() => {
+    //   initMap();
+    // });
 
-    // zone de scannage
-    const zonesScannage = [
-      { lat: 5.507541, lng: 1.627627, radius: 92600 },
-      { lat: 4.248415, lng: 1.869447, radius: 92600 },
-      { lat: 2.811496, lng: 2.352628, radius: 92600 }
-    ]
-
-    onMounted(() => {
-      initMap();
+    // Données fictives pour le graphe des certificats
+    const certificatChartSeries = ref([
+      {
+        name: "Certificats",
+        data: [12, 18, 10, 22, 15, 25, 20, 18, 24, 30, 28, 35],
+      },
+    ]);
+    const certificatChartOptions = ref({
+      chart: {
+        type: "bar",
+        height: 220,
+        toolbar: { show: false },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          horizontal: false,
+          columnWidth: "50%",
+        },
+      },
+      dataLabels: { enabled: false },
+      xaxis: {
+        categories: [
+          "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"
+        ],
+        labels: {
+          style: {
+            fontFamily: "Red Hat Display, sans-serif",
+            colors: "#9C9AB6",
+            fontSize: "13px",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontFamily: "Red Hat Display, sans-serif",
+            colors: "#9C9AB6",
+            fontSize: "13px",
+          },
+        },
+      },
+      colors: ["#4ad295"],
+      grid: {
+        show: true,
+        borderColor: "#e9ecef",
+        strokeDashArray: 4,
+      },
+      tooltip: {
+        enabled: true,
+        y: {
+          formatter: (val) => `${val} certificats`,
+        },
+      },
     });
 
     return {
       manifest,
-      // mapMarkers,
-      markers,
-      showLines,
-      showZEE,
-      zeeBounds,
-      zeeCenter,
       goBack,
       format_Date,
       isFullscreen,
-      toggleFullscreen,
       mapContainer,
       zeeGeoJson,
-      zonesScannage,
       fetchVessels,
-      onZoneChanged
+      certificatChartSeries,
+      certificatChartOptions,
     };
   },
 });
