@@ -204,6 +204,16 @@ import CrmeKpiPage from "@/pages/Dashboard/CrmeKpiPage.vue";
 import ListePostPage from "@/pages/Post/ListePostPage.vue";
 import AddEquipageModalPage from "@/pages/Equipage/AddEquipageModalPage.vue";
 import ListeEquipagePage from "@/pages/Equipage/ListeEquipagePage.vue";
+import ListTransportAssetPage from "@/pages/Transport-Asset/ListTransport-AssetPage.vue";
+import AddTransportAssetPage from "@/pages/Transport-Asset/AddTransport-AssetPage.vue";
+import EditTransportAssetPage from "@/pages/Transport-Asset/EditTransport-AssetPage.vue";
+import AddActivityPage from "@/pages/Activity/AddActivityPage.vue";
+import EditActivityPage from "@/pages/Activity/EditActivityPage.vue";
+import ListActivityPage from "@/pages/Activity/ListActivityPage.vue";
+import ListeInstallationPage from "@/pages/Installation/ListeInstallationPage.vue";
+import AddInstallationPage from "@/pages/Installation/AddInstallationPage.vue";
+import EditInstallationPage from "@/pages/Installation/EditInstallationPage.vue";
+import DetailsActivityPage from "@/pages/Activity/DetailsActivityPage.vue";
 
 
 const routes = [
@@ -736,6 +746,59 @@ const routes = [
         name: "LogoutPage",
         component: LogoutPage,
       },
+      {
+        path: "/addTransportAsset",
+        name: "AddTransportAssetPage",
+        component: AddTransportAssetPage,
+      },
+      {
+        path: "/listTransportAsset",
+        name: "ListTransportAssetPage",
+        component: ListTransportAssetPage,
+      },
+      {
+        path: '/modifierTransport/:id',
+        name: 'EditTransportAssetPage',
+        component:EditTransportAssetPage
+      },
+      {
+        path: '/addActivity',
+        name: 'AddActivityPage',
+        component: AddActivityPage
+      },
+      {
+        path: '/modifierActivity/:id',
+        name: 'EditActivityPage',
+        component:EditActivityPage
+      },
+      {
+        path: '/listActivity',
+        name: 'ListActivityPage',
+        component:ListActivityPage
+      },
+      { 
+        path: '/addInstallation',       
+        name: 'AddInstallationPage', 
+        component: AddInstallationPage
+      },
+      { 
+        path: '/modifierInstallation/:id',       
+        name: 'EditInstallationPage', 
+        component:EditInstallationPage
+      },
+      { 
+        path: '/listInstallation',       
+        name: 'ListInstallationPage', 
+        component:ListeInstallationPage
+      },
+      { 
+        path: '/viewActivity/:id',       
+        name: 'ViewActivityPage', 
+        component:DetailsActivityPage
+      },
+      
+
+
     ],
   },
   {

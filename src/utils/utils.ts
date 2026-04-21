@@ -151,7 +151,7 @@ const isNumber = (evt) => {
 //   });
 // } 
 
-const suppression = (id:number,element:any, route:string, entite:string) => {
+const suppression = (id:string,element:any, route:string, entite:string) => {
   Swal.fire({
       text: "Vous êtes sur le point de supprimer " + entite +". Etes-vous sûr ?",
       icon: "warning",
