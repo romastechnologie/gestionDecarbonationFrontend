@@ -182,7 +182,11 @@
                     Installation
                   </router-link>
                 </li>
-
+                <li class="sidebar-sub-menu-item">
+                  <router-link to="/listCurrency" class="sidebar-sub-menu-link">
+                    Devises
+                  </router-link>
+                </li>
               </ul>
             </div>
           </div>
