@@ -204,6 +204,8 @@ import CrmeKpiPage from "@/pages/Dashboard/CrmeKpiPage.vue";
 import ListePostPage from "@/pages/Post/ListePostPage.vue";
 import AddEquipageModalPage from "@/pages/Equipage/AddEquipageModalPage.vue";
 import ListeEquipagePage from "@/pages/Equipage/ListeEquipagePage.vue";
+import InscriptionPage from "@/pages/Authentication/Inscription/InscriptionPage.vue";
+
 
 
 const routes = [
@@ -726,6 +728,13 @@ const routes = [
         component: FormChecksRadiosPage,
       },
 
+      //    {
+      //   path: "/inscription",
+      //   name: "InscriptionPage",
+      //   component: InscriptionPage,
+      //  
+      // },
+
       {
         path: "/blank-page",
         name: "BlankPage",
@@ -748,6 +757,13 @@ const routes = [
         name: "LoginPage",
         component: LoginPage,
       },
+
+    {
+      path: "/inscription",
+      name: "InscriptionPage",
+      component: InscriptionPage,
+    },
+
     ]
   },
   { path: "/:pathMatch(.*)*", name: "ErrorPage", component: ErrorPage },
