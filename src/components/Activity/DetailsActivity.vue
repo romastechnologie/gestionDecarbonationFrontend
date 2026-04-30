@@ -80,6 +80,24 @@
           </div>
         </div>
 
+        <div class="card border mb-15 p-15" v-if="activity.carbonSurcharge != null">
+          <p class="text-uppercase text-muted fs-12 fw-semibold mb-10">Surcharge carbone</p>
+          <div class="d-flex align-items-center gap-3">
+            <div
+              class="bg-success bg-opacity-10 rounded p-10"
+              style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:20px;"
+            >
+              <i class="flaticon-co2 lh-1"></i>
+            </div>
+            <div>
+              <p class="text-muted fs-12 mb-1">Montant total calculé</p>
+              <h4 class="fw-bold text-success mb-0">
+                {{ formatCurrency(activity.carbonSurcharge) }}
+              </h4>
+            </div>
+          </div>
+        </div>
+
         <!-- Boutons -->
         <div class="d-flex gap-2 mt-20">
           <router-link :to="`/editActivity/${activity.id}`" class="btn btn-warning">Modifier</router-link>
@@ -105,6 +123,14 @@ export default defineComponent({
 
     const formatDate = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
 
+    const formatCurrency = (value: number | string) => {
+      return new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+      }).format(Number(value));
+    };
+
     const modeBadgeClass = computed(() => ({
       'badge': true,
       'bg-primary': activity.value?.mode === 'AIR',
@@ -129,7 +155,7 @@ export default defineComponent({
       }
     });
 
-    return { activity, isLoading, formatDate, modeBadgeClass, statusBadgeClass };
+    return { activity, isLoading, formatDate, formatCurrency, modeBadgeClass, statusBadgeClass };
   },
 });
 </script>

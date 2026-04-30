@@ -91,6 +91,20 @@
             </div>
           </div>
 
+          <!-- Manifeste -->
+          <div class="col-md-6">
+            <div class="form-group mb-15 mb-sm-20 mb-md-25">
+              <label class="d-block text-black fw-semibold mb-10">Manifeste (Référence SIC)</label>
+              <Field
+                name="manifestSicReference"
+                type="text"
+                class="form-control shadow-none fs-md-15 text-black"
+                placeholder="Entrer la référence SIC du manifeste"
+              />
+              <ErrorMessage name="manifestSicReference" class="text-danger" />
+            </div>
+          </div>
+
           <!-- Période début -->
           <div class="col-md-6">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
@@ -150,6 +164,7 @@
               <ErrorMessage name="distanceKm" class="text-danger" />
             </div>
           </div>
+
           <!-- Masse carburant + Unité -->
           <div class="col-md-6">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
@@ -227,13 +242,13 @@ export default defineComponent({
     const statusOptions = ['PENDING', 'VALIDATED', 'REJECTED'];
     const installationOptions = ref<{ label: string; value: string }[]>([]);
     const transportOptions = ref<{ label: string; value: string }[]>([]);
-
     const activitySchema = Yup.object().shape({
       mode: Yup.string().required('Le mode est obligatoire'),
       status: Yup.string().nullable(),
       installationFromId: Yup.string().nullable(),
       installationToId: Yup.string().nullable(),
       transportAssetId: Yup.string().nullable(),
+      manifestSicReference: Yup.string().nullable(), // ← identifiant par sicReference
       periodStart: Yup.date().required('La période de début est obligatoire').typeError('Date invalide'),
       periodEnd: Yup.date()
         .required('La période de fin est obligatoire')
@@ -279,7 +294,8 @@ export default defineComponent({
           installationFromId: activity.installationFrom?.id ?? null,
           installationToId:   activity.installationTo?.id   ?? null,
           transportAssetId:   activity.transportAsset?.id   ?? null,
-          fuelMassUnit:       activity.fuelMassUnit ?? 'T', // ← valeur existante ou défaut
+          manifestSicReference: activity.manifest?.sicReference ?? null, // ← sicReference
+          fuelMassUnit:       activity.fuelMassUnit ?? 'T',
         });
 
       } catch (err) {
@@ -313,6 +329,7 @@ export default defineComponent({
           installationFromId: payload.installationFromId,
           installationToId:   payload.installationToId,
           transportAssetId:   payload.transportAssetId,
+          manifestSicReference: payload.manifestSicReference ?? undefined,
         };
 
         const { data } = await ApiService.put(`/modifierActivity/${id}`, finalPayload);
