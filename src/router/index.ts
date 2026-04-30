@@ -216,6 +216,9 @@ import ListeInstallationPage from "@/pages/Installation/ListeInstallationPage.vu
 import AddInstallationPage from "@/pages/Installation/AddInstallationPage.vue";
 import EditInstallationPage from "@/pages/Installation/EditInstallationPage.vue";
 import DetailsActivityPage from "@/pages/Activity/DetailsActivityPage.vue";
+import AddCurrencyPage from "@/pages/Currency/AddCurrencyPage.vue";
+import ListCurrencyPage from "@/pages/Currency/ListCurrencyPage.vue";
+import ListCurrencyRatePage from "@/pages/CurrencyRate/ListCurrencyRatePage.vue";
 
 
 const routes = [
@@ -805,9 +808,16 @@ const routes = [
         name: 'ViewActivityPage', 
         component:DetailsActivityPage
       },
-      
-
-
+      {
+        path: "/listCurrency",
+        name: "ListCurrencyPage",
+        component: ListCurrencyPage,
+      },
+      {
+        path: "/listCurrencyRate",
+        name: "ListCurrencyRatePage",
+        component: ListCurrencyRatePage,
+      }
     ],
   },
   {
