@@ -104,11 +104,23 @@
                         <Field name="orgEmail" type="text" class="form-control" placeholder="contact@organisation.com" />
                         <ErrorMessage name="orgEmail" class="text-danger small" />
                       </div>
-                      <div class="col-sm-4">
-                        <label class="form-label small">Téléphone organisation</label>
-                        <Field name="orgPhone" type="text" class="form-control" placeholder="+229 XX XX XX XX" />
-                        <ErrorMessage name="orgPhone" class="text-danger small" />
-                      </div>
+                     <!-- APRÈS -->
+<div class="col-sm-4">
+  <label class="form-label small">Téléphone organisation</label>
+  <Field name="orgPhone" v-slot="{ field }">
+    <div class="tel-input-fix">
+      <VueTelInput
+        v-model="field.value"
+        v-bind="field"
+        mode="international"
+        :defaultCountry="selectedCountryCode"
+        :inputOptions="{ placeholder: '+229 XX XX XX XX' }"
+        @on-input="onOrgTelInput"
+      />
+    </div>
+  </Field>
+  <ErrorMessage name="orgPhone" class="text-danger small" />
+</div>
                       <div class="col-sm-4">
                         <label class="form-label small">Fax</label>
                         <Field name="fax" type="text" class="form-control" placeholder="Numéro fax" />
@@ -649,6 +661,11 @@ export default defineComponent({
         .required("Confirmez votre mot de passe"),
     });
 
+    const onOrgTelInput = (tel: any) => {
+  const value = tel.number?.international || "";
+  registerForm.value?.setFieldValue("orgPhone", value);
+};
+
     const loginForm = ref<FormContext<any> | null>(null);
     const registerForm = ref<FormContext | null>(null);
     const telephone = ref("");
@@ -1128,6 +1145,7 @@ export default defineComponent({
       showPassword, togglePassword, selectedCountryCode,
       globalError, globalSuccess, selectedDocumentLabel,
       telephone, values, onTelInput, onPaysChange, stopOtpCooldown,
+        onOrgTelInput,
     };
   },
 });

@@ -162,9 +162,24 @@
                   </router-link>
                 </li>
 
-                 <li class="sidebar-sub-menu-item">
+                <li class="sidebar-sub-menu-item">
                   <router-link to="/listePoste" class="sidebar-sub-menu-link">
                     Liste des Posts
+                  </router-link>
+                </li>
+                <li class="sidebar-sub-menu-item">
+                  <router-link to="/listTransportAsset" class="sidebar-sub-menu-link">
+                    Transports
+                  </router-link>
+                </li>
+                <li class="sidebar-sub-menu-item">
+                  <router-link to="/listActivity" class="sidebar-sub-menu-link">
+                    Activités
+                  </router-link>
+                </li>
+                <li class="sidebar-sub-menu-item">
+                  <router-link to="/listinstallation" class="sidebar-sub-menu-link">
+                    Installation
                   </router-link>
                 </li>
 

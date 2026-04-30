@@ -1,6 +1,8 @@
 <template>
   <div class="card mb-25 border-0 rounded-0 bg-white letter-spacing">
-    <div class="card-head box-shadow bg-white d-lg-flex align-items-center justify-content-between p-15 p-sm-20 p-md-25">
+    <div
+      class="card-head box-shadow bg-white d-lg-flex align-items-center justify-content-between p-15 p-sm-20 p-md-25"
+    >
       <div class="d-sm-flex align-items-center">
         <router-link
           class="default-btn position-relative transition border-0 fw-medium text-white pt-11 pb-11 ps-25 pe-25 pt-md-12 pb-md-12 ps-md-30 pe-md-30 rounded-1 bg-success fs-md-15 fs-lg-16 d-inline-block me-10 mb-10 mb-lg-0 text-decoration-none"
@@ -19,7 +21,10 @@
             class="form-control shadow-none text-black rounded-0 border-0"
             placeholder="Rechercher un transport"
           />
-          <button type="submit" class="bg-transparent text-primary transition p-0 border-0">
+          <button
+            type="submit"
+            class="bg-transparent text-primary transition p-0 border-0"
+          >
             <i class="flaticon-search-interface-symbol"></i>
           </button>
         </form>
@@ -31,48 +36,34 @@
         <table v-if="transports.length > 0" class="table text-nowrap align-middle mb-0">
           <thead>
             <tr>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type Asset</th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type</th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Identifiant</th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Catégorie</th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type Moteur</th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Carburant</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type de moteur</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type de carburant</th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Nom</th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Proprio</th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Vit. Moy (km/h)</th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Vit. Max (km/h)</th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Date Production</th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                <span class="badge bg-info text-white">Organisation</span>
-              </th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Organisation</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Date mise en production</th>
               <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0 text-end pe-0">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(transport, index) in transports" :key="index">
-              <td class="shadow-none lh-1 fw-medium">
-                <span :class="getBadgeClass(transport.typeTransportAsset)">
-                  {{ transport.typeTransportAsset ?? '—' }}
+              <td class="shadow-none lh-1 fw-medium text-black-emphasis">
+                <span :class="transport.type === 'VESSEL' ? 'badge bg-info text-white' : 'badge bg-warning text-white'">
+                  {{ transport.type }}
                 </span>
               </td>
-              <td class="shadow-none lh-1 fw-medium text-black-emphasis">{{ transport.type ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.identifier }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.category ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.typeMotor ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.fuelType ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.name ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.ownerName ?? '—' }}</td>
-              <td class="shadow-none lh-1 fw-medium">{{ transport.speedAvgKmh ?? '—' }}</td>
-              <td class="shadow-none lh-1 fw-medium">{{ transport.speedMaxKmh ?? '—' }}</td>
+              <td class="shadow-none lh-1 fw-medium">{{ transport.organisation?.name ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">
                 {{ transport.DateMiseProduction ? format_date(transport.DateMiseProduction) : '—' }}
-              </td>
-              <td class="shadow-none lh-1 fw-medium">
-                <span v-if="transport.organisation" class="badge bg-light text-dark border">
-                  <i class="flaticon-building position-relative me-1 fs-12"></i>
-                  {{ transport.organisation.name }}
-                </span>
-                <span v-else class="text-muted">—</span>
               </td>
               <td class="shadow-none lh-1 fw-medium text-body-tertiary text-end pe-0">
                 <div class="dropdown">
@@ -110,8 +101,7 @@
             </tr>
           </tbody>
         </table>
-        <div v-else class="text-center py-4 text-muted">
-          <i class="flaticon-truck fs-1 d-block mb-2"></i>
+        <div v-else class="text-center">
           Aucun transport trouvé.
         </div>
       </div>
@@ -131,9 +121,11 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import ApiService from '@/services/ApiService';
+import axios from 'axios'; // ← axios direct
 import { format_date, suppression, error } from '@/utils/utils';
 import PaginationComponent from '@/components/Utilities/Pagination.vue';
+
+const BASE_URL = 'http://localhost:3005/api';
 
 interface Organisation {
   id: string;
@@ -142,8 +134,7 @@ interface Organisation {
 
 interface TransportAsset {
   id: string;
-  typeTransportAsset: string | null;
-  type: string | null;
+  type: string;
   identifier: string;
   category: string | null;
   typeMotor: string | null;
@@ -151,15 +142,15 @@ interface TransportAsset {
   DateMiseProduction: Date | null;
   name: string | null;
   ownerName: string | null;
-  speedAvgKmh: number | null;
-  speedMaxKmh: number | null;
   createdAt: Date;
-  organisation: Organisation | null;
+  organisation: Organisation | null; // ← ajouté
 }
 
 export default defineComponent({
   name: 'ListeTransportAssets',
-  components: { PaginationComponent },
+  components: {
+    PaginationComponent,
+  },
   setup() {
     const transports = ref<TransportAsset[]>([]);
     const searchTerm = ref('');
@@ -168,26 +159,18 @@ export default defineComponent({
     const limit = ref(10);
     const totalElements = ref(0);
 
-    const getBadgeClass = (type: string | null) => {
-      const map: Record<string, string> = {
-        VESSEL:   'badge bg-info text-white',
-        AIRCRAFT: 'badge bg-purple text-white',
-        VEHICLE:  'badge bg-warning text-dark',
-        TRAIN:    'badge bg-secondary text-white',
-      };
-      return map[type ?? ''] || 'badge bg-secondary text-white';
-    };
-
     const getAllTransports = (currentPage = 1, currentLimit = 10, search = '') => {
-      return ApiService.get(`/listTransports?page=${currentPage}&limit=${currentLimit}&mot=${search}`)
+      return axios.get(`${BASE_URL}/listTransports?page=${currentPage}&limit=${currentLimit}&mot=${search}`)
         .then(({ data }) => {
+          console.log('Transports reçus:', data.data.data[0]); // voir le premier transport complet
           transports.value = data.data.data;
           totalPages.value = data.data.totalPages;
           limit.value = data.data.limit;
           totalElements.value = data.data.totalElements;
         })
         .catch((err) => {
-          error(err.response?.data?.message || 'Erreur lors de la récupération des transports');
+          const message = err.response?.data?.message || 'Erreur lors de la récupération des transports';
+          error(message);
         });
     };
 
@@ -201,12 +184,21 @@ export default defineComponent({
       getAllTransports(page.value, limit.value, searchTerm.value);
     };
 
-    onMounted(() => getAllTransports());
+    onMounted(() => {
+      getAllTransports();
+    });
 
     return {
-      transports, format_date, suppression,
-      searchTerm, page, totalPages, limit, totalElements,
-      handlePaginate, rechercher, getBadgeClass,
+      transports,
+      format_date,
+      suppression,
+      searchTerm,
+      page,
+      totalPages,
+      limit,
+      totalElements,
+      handlePaginate,
+      rechercher,
     };
   },
 });
