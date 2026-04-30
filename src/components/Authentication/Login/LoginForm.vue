@@ -206,7 +206,7 @@ const onSubmitLogin = async (values: any) => {
     if (status === 403) {
       const body = err.response.data;
       if (body?.requireActivation) {
-        globalError.value = "Votre compte n'est pas encore activé. Vérifiez votre email.";
+        globalError.value = "Votre compte n'est pas activé.Veuillez contactez l'administrateur.";
         return;
       }
       if (body?.approvalStatus === 'PENDING') {

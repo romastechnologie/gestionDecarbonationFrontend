@@ -71,90 +71,56 @@
                     <i class="flaticon-chevron-2 position-relative ms-5 top-2 fs-15"></i>
                   </span>
                   <ul class="dropdown-menu">
-                    <!-- Modifier mot de passe -->
-                    <li>
-                      <a
-                        class="dropdown-item d-flex align-items-center"
-                        href="#"
-                        data-bs-toggle="modal"
-                        data-bs-target="#EditUserPassModal"
-                        @click="openEditPassModal(user)"
-                      >
-                        <i class="flaticon-lock lh-1 me-8 position-relative top-1"></i>
-                        Modifier le mot de passe
-                      </a>
-                    </li>
-                    <!-- Modifier infos -->
-                    <li>
-                      <router-link
-                        class="dropdown-item d-flex align-items-center"
-                        :to="{ name: 'EditUserPage', params: { id: user.id } }"
-                      >
-                        <i class="flaticon-pen lh-1 me-8 position-relative top-1"></i>
-                        Modifier les informations
-                      </router-link>
-                    </li>
-                    <!-- Ajouter un rôle -->
-                    <li>
-                      <a
-                        class="dropdown-item d-flex align-items-center"
-                        href="#"
-                        data-bs-toggle="modal"
-                        data-bs-target="#AddRoleModal"
-                        @click="openAddRoleModal(user)"
-                      >
-                        <i class="flaticon-shield lh-1 me-8 position-relative top-1"></i>
-                        Ajouter un role
-                      </a>
-                    </li>
-                    <!-- Détails -->
-                    <li>
-                      <router-link
-                        :to="{ name: 'ViewUserPage', params: { id: user.id } }"
-                        class="dropdown-item d-flex align-items-center"
-                      >
-                        <i class="flaticon-eye lh-1 me-8 position-relative top-1"></i>
-                        Details
-                      </router-link>
-                    </li>
-                    <!-- Affecter une caisse -->
-                    <li>
-                      <a
-                        class="dropdown-item d-flex align-items-center"
-                        href="#"
-                        data-bs-toggle="modal"
-                        data-bs-target="#AffectationCaisseModal"
-                        @click="openAffectationCaisseModal(user)"
-                      >
-                        <i class="flaticon-shield lh-1 me-8 position-relative top-1"></i>
-                        Affecter une caisse
-                      </a>
-                    </li>
-                    <!-- Supprimer -->
-                    <li>
-                      <a
-                        class="dropdown-item d-flex align-items-center text-danger"
-                        href="javascript:void(0);"
-                        @click="suppression(user.id, users, 'users', 'un utilisateur')"
-                      >
-                        <i class="flaticon-delete lh-1 me-8 position-relative top-1"></i>
-                        Supprimer
-                      </a>
-                    </li>
-                    <!-- Statut -->
-                    <li>
-                      <a
-                        class="dropdown-item d-flex align-items-center"
-                        href="#"
-                        data-bs-toggle="modal"
-                        data-bs-target="#StatusUserModal"
-                        @click="openStatusModal(user)"
-                      >
-                        <i class="flaticon-check lh-1 me-8 position-relative top-1"></i>
-                        Statut
-                      </a>
-                    </li>
-                  </ul>
+  <!-- Modifier mot de passe -->
+  <li>
+    <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#EditUserPassModal" @click="openEditPassModal(user)">
+      <i class="flaticon-lock lh-1 me-8 position-relative top-1"></i>
+      Modifier le mot de passe
+    </a>
+  </li>
+  <!-- Modifier infos -->
+  <li>
+    <router-link class="dropdown-item d-flex align-items-center" :to="{ name: 'EditUserPage', params: { id: user.id } }">
+      <i class="flaticon-pen lh-1 me-8 position-relative top-1"></i>
+      Modifier les informations
+    </router-link>
+  </li>
+  <!-- Ajouter un rôle -->
+  <li>
+    <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#AddRoleModal" @click="openAddRoleModal(user)">
+      <i class="flaticon-shield lh-1 me-8 position-relative top-1"></i>
+      Ajouter un role
+    </a>
+  </li>
+  <!-- Détails -->
+  <li>
+    <router-link :to="{ name: 'ViewUserPage', params: { id: user.id } }" class="dropdown-item d-flex align-items-center">
+      <i class="flaticon-eye lh-1 me-8 position-relative top-1"></i>
+      Details
+    </router-link>
+  </li>
+  <!-- Affecter une caisse -->
+  <li>
+    <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#AffectationCaisseModal" @click="openAffectationCaisseModal(user)">
+      <i class="flaticon-shield lh-1 me-8 position-relative top-1"></i>
+      Affecter une caisse
+    </a>
+  </li>
+  <!-- Supprimer -->
+  <li>
+    <a class="dropdown-item d-flex align-items-center text-danger" href="javascript:void(0);" @click="suppression(user.id, users, 'users', 'un utilisateur')">
+      <i class="flaticon-delete lh-1 me-8 position-relative top-1"></i>
+      Supprimer
+    </a>
+  </li>
+  <!-- Statut -->
+  <li>
+    <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" @click="toggleStatut(user)">
+      <i class="flaticon-check lh-1 me-8 position-relative top-1"></i>
+      {{ user.isActive ? 'Désactiver' : 'Activer' }}
+    </a>
+  </li>
+</ul>
                 </div>
               </td>
             </tr>
@@ -180,76 +146,7 @@
   <AddRoleModal :selectedUser="selectedUser" :selectedUserId="selectedUserId" />
 
   <!-- ========== MODAL STATUT ========== -->
-  <teleport to="body">
-    <div class="modal fade" id="StatusUserModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-3 shadow">
-          <div class="modal-header border-0 pb-0">
-            <h5 class="modal-title fw-bold">Statut du compte</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body py-4" v-if="selectedUser">
-
-            <!-- Avatar + infos -->
-            <div class="text-center mb-4">
-              <div class="avatar-circle mx-auto mb-3">
-                <span class="avatar-initials">
-                  {{ (selectedUser.nom || '?')[0].toUpperCase() }}{{ (selectedUser.prenom || '?')[0].toUpperCase() }}
-                </span>
-              </div>
-              <h6 class="fw-bold mb-1">{{ selectedUser.nom }} {{ selectedUser.prenom }}</h6>
-              <small class="text-muted">{{ selectedUser.email }}</small>
-            </div>
-
-            <!-- Etat actuel -->
-            <div
-              class="status-box text-center p-3 rounded-3 mb-4"
-              :class="selectedUser.isActive ? 'status-active' : 'status-inactive'"
-            >
-              <div class="fs-13 text-muted mb-2">Etat actuel du compte</div>
-              <span class="fw-bold fs-16">
-                <span v-if="selectedUser.isActive" class="text-success">
-                  <i class="bi bi-check-circle-fill me-1"></i>Compte Actif
-                </span>
-                <span v-else class="text-danger">
-                  <i class="bi bi-x-circle-fill me-1"></i>Compte Inactif
-                </span>
-              </span>
-              <div class="fs-12 mt-2" :class="selectedUser.isActive ? 'text-success' : 'text-danger'">
-                <span v-if="selectedUser.isActive">L'utilisateur peut se connecter a l'application.</span>
-                <span v-else>L'utilisateur ne peut pas se connecter a l'application.</span>
-              </div>
-            </div>
-
-            <!-- Boutons action -->
-            <div class="d-flex justify-content-center gap-3">
-              <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
-                Fermer
-              </button>
-              <button
-                v-if="!selectedUser.isActive"
-                class="btn btn-success px-4"
-                @click="activerCompte"
-                data-bs-dismiss="modal"
-              >
-                <i class="bi bi-person-check me-1"></i>
-                Activer le compte
-              </button>
-              <button
-                v-else
-                class="btn btn-danger px-4"
-                @click="desactiverCompte"
-                data-bs-dismiss="modal"
-              >
-                <i class="bi bi-person-x me-1"></i>
-                Desactiver le compte
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </teleport>
+ 
 </template>
 
 <script lang="ts">
@@ -261,6 +158,7 @@ import AddRoleModal from "./AddRoleModal.vue";
 import PaginationComponent from "@/components/Utilities/Pagination.vue";
 import JwtService from "@/services/JwtService";
 import { User } from "@/models/users";
+import Swal from "sweetalert2";
 
 export default defineComponent({
   name: "ListeUser",
@@ -294,6 +192,41 @@ export default defineComponent({
         });
     };
 
+
+const toggleStatut = (u: User) => {
+  const activation = !u.isActive;
+
+  Swal.fire({
+    title: activation
+      ? "Activer ce compte ?"
+      : "Désactiver ce compte ?",
+    text: activation
+      ? `Voulez-vous vraiment activer le compte de ${u.nom} ${u.prenom} ?`
+      : `Voulez-vous vraiment désactiver le compte de ${u.nom} ${u.prenom} ?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: activation ? "#28a745" : "#dc3545",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: activation ? "Oui, activer" : "Oui, désactiver",
+    cancelButtonText: "Annuler",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      ApiService.put(`/users/${u.id}`, { isActive: activation })
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: activation ? "Compte activé !" : "Compte désactivé !",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          getAllUsers(page.value, limit.value, searchTerm.value);
+        })
+        .catch((err) =>
+          error(err.response?.data?.message || "Erreur lors du changement de statut")
+        );
+    }
+  });
+};
     // ── STATUT ──────────────────────────────────────────────────────────────
     const openStatusModal = (u: User) => {
       selectedUser.value = { ...u };
@@ -343,6 +276,7 @@ const desactiverCompte = () => {
       page, totalPages, limit, totalElements,
       handlePaginate, searchTerm, rechercher,
       getAllUsers, refreshUsers,
+      toggleStatut, 
     };
   },
 });

@@ -12,6 +12,7 @@ export interface UsersObject {
     sexe: string;
     email: string;
     password: string;
+    isActive: boolean;
     createdAt: string;
     updatedAt: string;
     deletedAt?: string;
