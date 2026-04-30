@@ -63,22 +63,23 @@
               <ErrorMessage name="typeMoteur" class="text-danger" />
             </div>
           </div>
-         <!-- Type de carburant -->
-        <div class="col-md-6">
-          <div class="form-group mb-15 mb-sm-20 mb-md-25">
-            <label class="d-block text-black fw-semibold mb-10">Type de carburant</label>
-            <Field name="fuelType" v-slot="{ field }">
-              <Multiselect
-                :searchable="true"
-                :options="fuelTypeOptions"
-                v-model="field.value"
-                v-bind="field"
-                placeholder="Sélectionner le type de carburant"
-              />
-            </Field>
-            <ErrorMessage name="fuelType" class="text-danger" />
+
+          <!-- Type de carburant -->
+          <div class="col-md-6">
+            <div class="form-group mb-15 mb-sm-20 mb-md-25">
+              <label class="d-block text-black fw-semibold mb-10">Type de carburant</label>
+              <Field name="fuelType" v-slot="{ field }">
+                <Multiselect
+                  :searchable="true"
+                  :options="fuelTypeOptions"
+                  v-model="field.value"
+                  v-bind="field"
+                  placeholder="Sélectionner le type de carburant"
+                />
+              </Field>
+              <ErrorMessage name="fuelType" class="text-danger" />
+            </div>
           </div>
-        </div>
 
           <!-- Date de mise en production -->
           <div class="col-md-6">
@@ -104,6 +105,22 @@
               <label class="d-block text-black fw-semibold mb-10">Nom du propriétaire</label>
               <Field name="ownerName" type="text" class="form-control shadow-none fs-md-15 text-black" placeholder="Entrer le nom du propriétaire" />
               <ErrorMessage name="ownerName" class="text-danger" />
+            </div>
+          </div>
+
+          <!-- Organisation -->
+          <div class="col-md-6">
+            <div class="form-group mb-15 mb-sm-20 mb-md-25">
+              <label class="d-block text-black fw-semibold mb-10">Organisation</label>
+              <Multiselect
+                :searchable="true"
+                :options="organisationOptions"
+                v-model="selectedOrganisationId"
+                placeholder="Sélectionner une organisation"
+                label="label"
+                track-by="value"
+                :valueProp="'value'"
+              />
             </div>
           </div>
 
@@ -136,8 +153,10 @@ import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as Yup from 'yup';
 import Multiselect from '@vueform/multiselect';
 import ApiService from '@/services/ApiService';
+import axios from 'axios';
 import { error, success } from '@/utils/utils';
 import { useRouter, useRoute } from 'vue-router';
+
 
 const KNOWN_TYPES = ['NAVIRE', 'AVION', 'AUTRES'];
 const fuelTypeOptions = [
@@ -147,6 +166,7 @@ const fuelTypeOptions = [
   'GPL (Gaz de Pétrole Liquéfié)',
   'Fioul lourd',
 ];
+
 export default defineComponent({
   name: 'EditTransportAsset',
   components: { Form, Field, ErrorMessage, Multiselect },
@@ -160,6 +180,25 @@ export default defineComponent({
     const selectedType = ref<string | null>(null);
     const customTypeValue = ref('');
     const customTypeError = ref('');
+
+    // Organisation
+    const organisationOptions = ref<{ value: string; label: string }[]>([]);
+    const selectedOrganisationId = ref<string | null>(null);
+
+    const loadOrganisations = () => {
+  axios.get('http://localhost:3005/api/listOrganisations?page=1&limit=100')
+    .then(({ data }) => {
+      console.log('Organisations reçues:', data);
+      organisationOptions.value = data.data.data.map((org: any) => ({
+        value: org.id,
+        label: org.name,
+      }));
+      console.log('Options:', organisationOptions.value);
+    })
+    .catch((err) => {
+      console.error('Erreur:', err);
+    });
+};
 
     const transportSchema = Yup.object().shape({
       type: Yup.string().required('Le type est obligatoire'),
@@ -179,6 +218,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      await loadOrganisations();
+
       const id = route.params.id as string;
       try {
         const { data } = await ApiService.get(`/transport/${id}`);
@@ -190,7 +231,11 @@ export default defineComponent({
             transport.DateMiseProduction = transport.DateMiseProduction.substring(0, 10);
           }
 
-          // Si le type n'est pas dans la liste connue → type custom
+          // Pré-sélectionner l'organisation si elle existe
+          if (transport.organisation?.id) {
+            selectedOrganisationId.value = transport.organisation.id;
+          }
+
           if (currentType && !KNOWN_TYPES.includes(currentType)) {
             selectedType.value = 'AUTRES';
             customTypeValue.value = currentType;
@@ -198,13 +243,11 @@ export default defineComponent({
             selectedType.value = currentType ?? null;
           }
 
-          // setValues avec 'AUTRES' si type custom
           transportForm.value?.setValues({
             ...transport,
             type: selectedType.value,
           });
 
-          // Réassigner après setValues pour éviter l'écrasement
           if (currentType && !KNOWN_TYPES.includes(currentType)) {
             customTypeValue.value = currentType;
           }
@@ -223,6 +266,13 @@ export default defineComponent({
           return;
         }
         values.type = customTypeValue.value.trim().toUpperCase();
+      }
+
+      // Ajout de l'organisationId si sélectionnée
+      if (selectedOrganisationId.value) {
+        values.organisationId = selectedOrganisationId.value;
+      } else {
+        values.organisationId = null;
       }
 
       isLoading.value = true;
@@ -249,7 +299,9 @@ export default defineComponent({
       isLoading,
       onTypeChange,
       updateTransportAsset,
-      fuelTypeOptions
+      fuelTypeOptions,
+      organisationOptions,
+      selectedOrganisationId,
     };
   },
 });

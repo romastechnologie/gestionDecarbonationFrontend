@@ -36,53 +36,32 @@
         <table v-if="transports.length > 0" class="table text-nowrap align-middle mb-0">
           <thead>
             <tr>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Type
-              </th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Identifiant
-              </th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Catégorie
-              </th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Type de moteur
-              </th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Type de carburant
-              </th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Nom
-              </th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Proprio
-              </th>
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Date mise en production
-              </th>
-              <!-- <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">
-                Date création
-              </th> -->
-              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0 text-end pe-0">
-                Actions
-              </th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Identifiant</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Catégorie</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type de moteur</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Type de carburant</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Nom</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Proprio</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Organisation</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0">Date mise en production</th>
+              <th class="text-uppercase fw-medium shadow-none text-body-tertiary fs-13 pt-0 text-end pe-0">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(transport, index) in transports" :key="index">
               <td class="shadow-none lh-1 fw-medium text-black-emphasis">
-                <span
-                  :class="transport.type === 'VESSEL' ? 'badge bg-info text-white' : 'badge bg-warning text-white'"
-                >
+                <span :class="transport.type === 'VESSEL' ? 'badge bg-info text-white' : 'badge bg-warning text-white'">
                   {{ transport.type }}
                 </span>
               </td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.identifier }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.category ?? '—' }}</td>
-              <td class="shadow-none lh-1 fw-medium">{{ transport.typeMoteur ?? '—' }}</td>
+              <td class="shadow-none lh-1 fw-medium">{{ transport.typeMotor ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.fuelType ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.name ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">{{ transport.ownerName ?? '—' }}</td>
+              <td class="shadow-none lh-1 fw-medium">{{ transport.organisation?.name ?? '—' }}</td>
               <td class="shadow-none lh-1 fw-medium">
                 {{ transport.DateMiseProduction ? format_date(transport.DateMiseProduction) : '—' }}
               </td>
@@ -106,15 +85,6 @@
                         Modifier
                       </router-link>
                     </li>
-                    <!-- <li>
-                      <router-link
-                        :to="{ name: 'ViewTransportAssetPage', params: { id: transport.id } }"
-                        class="dropdown-item d-flex align-items-center"
-                      >
-                        <i class="flaticon-eye lh-1 me-8 position-relative top-1"></i>
-                        Détails
-                      </router-link>
-                    </li> -->
                     <li>
                       <a
                         class="dropdown-item d-flex align-items-center"
@@ -136,9 +106,7 @@
         </div>
       </div>
 
-      <div
-        class="pagination-area d-md-flex mt-15 mt-sm-20 mt-md-25 justify-content-between align-items-center"
-      >
+      <div class="pagination-area d-md-flex mt-15 mt-sm-20 mt-md-25 justify-content-between align-items-center">
         <PaginationComponent
           :page="page"
           :totalPages="totalPages"
@@ -153,21 +121,29 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import ApiService from '@/services/ApiService';
+import axios from 'axios'; // ← axios direct
 import { format_date, suppression, error } from '@/utils/utils';
 import PaginationComponent from '@/components/Utilities/Pagination.vue';
+
+const BASE_URL = 'http://localhost:3005/api';
+
+interface Organisation {
+  id: string;
+  name: string;
+}
 
 interface TransportAsset {
   id: string;
   type: string;
   identifier: string;
   category: string | null;
-  typeMoteur: string | null;
-  fuelType:string | null;
+  typeMotor: string | null;
+  fuelType: string | null;
   DateMiseProduction: Date | null;
   name: string | null;
   ownerName: string | null;
   createdAt: Date;
+  organisation: Organisation | null; // ← ajouté
 }
 
 export default defineComponent({
@@ -184,20 +160,16 @@ export default defineComponent({
     const totalElements = ref(0);
 
     const getAllTransports = (currentPage = 1, currentLimit = 10, search = '') => {
-      return ApiService.get(
-        `/listTransports?page=${currentPage}&limit=${currentLimit}&mot=${search}`
-      )
+      return axios.get(`${BASE_URL}/listTransports?page=${currentPage}&limit=${currentLimit}&mot=${search}`)
         .then(({ data }) => {
+          console.log('Transports reçus:', data.data.data[0]); // voir le premier transport complet
           transports.value = data.data.data;
-          console.log('rrrr',transports.value);
           totalPages.value = data.data.totalPages;
           limit.value = data.data.limit;
           totalElements.value = data.data.totalElements;
         })
         .catch((err) => {
-          const message =
-            err.response?.data?.message ||
-            'Erreur lors de la récupération des transports';
+          const message = err.response?.data?.message || 'Erreur lors de la récupération des transports';
           error(message);
         });
     };

@@ -204,6 +204,8 @@ import CrmeKpiPage from "@/pages/Dashboard/CrmeKpiPage.vue";
 import ListePostPage from "@/pages/Post/ListePostPage.vue";
 import AddEquipageModalPage from "@/pages/Equipage/AddEquipageModalPage.vue";
 import ListeEquipagePage from "@/pages/Equipage/ListeEquipagePage.vue";
+import InscriptionPage from "@/pages/Authentication/Inscription/InscriptionPage.vue";
+
 import ListTransportAssetPage from "@/pages/Transport-Asset/ListTransport-AssetPage.vue";
 import AddTransportAssetPage from "@/pages/Transport-Asset/AddTransport-AssetPage.vue";
 import EditTransportAssetPage from "@/pages/Transport-Asset/EditTransport-AssetPage.vue";
@@ -214,6 +216,9 @@ import ListeInstallationPage from "@/pages/Installation/ListeInstallationPage.vu
 import AddInstallationPage from "@/pages/Installation/AddInstallationPage.vue";
 import EditInstallationPage from "@/pages/Installation/EditInstallationPage.vue";
 import DetailsActivityPage from "@/pages/Activity/DetailsActivityPage.vue";
+import AddCurrencyPage from "@/pages/Currency/AddCurrencyPage.vue";
+import ListCurrencyPage from "@/pages/Currency/ListCurrencyPage.vue";
+import ListCurrencyRatePage from "@/pages/CurrencyRate/ListCurrencyRatePage.vue";
 
 
 const routes = [
@@ -736,6 +741,13 @@ const routes = [
         component: FormChecksRadiosPage,
       },
 
+      //    {
+      //   path: "/inscription",
+      //   name: "InscriptionPage",
+      //   component: InscriptionPage,
+      //  
+      // },
+
       {
         path: "/blank-page",
         name: "BlankPage",
@@ -796,9 +808,16 @@ const routes = [
         name: 'ViewActivityPage', 
         component:DetailsActivityPage
       },
-      
-
-
+      {
+        path: "/listCurrency",
+        name: "ListCurrencyPage",
+        component: ListCurrencyPage,
+      },
+      {
+        path: "/listCurrencyRate",
+        name: "ListCurrencyRatePage",
+        component: ListCurrencyRatePage,
+      }
     ],
   },
   {
@@ -811,6 +830,13 @@ const routes = [
         name: "LoginPage",
         component: LoginPage,
       },
+
+    {
+      path: "/inscription",
+      name: "InscriptionPage",
+      component: InscriptionPage,
+    },
+
     ]
   },
   { path: "/:pathMatch(.*)*", name: "ErrorPage", component: ErrorPage },

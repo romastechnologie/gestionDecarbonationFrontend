@@ -63,6 +63,8 @@
               <ErrorMessage name="typeMoteur" class="text-danger" />
             </div>
           </div>
+
+          <!-- Type de carburant -->
           <div class="col-md-6">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
               <label class="d-block text-black fw-semibold mb-10">Type de carburant</label>
@@ -106,6 +108,22 @@
             </div>
           </div>
 
+          <!-- Organisation -->
+          <div class="col-md-6">
+            <div class="form-group mb-15 mb-sm-20 mb-md-25">
+              <label class="d-block text-black fw-semibold mb-10">Organisation</label>
+              <Multiselect
+                :searchable="true"
+                :options="organisationOptions"
+                v-model="selectedOrganisationId"
+                placeholder="Sélectionner une organisation"
+                label="label"
+                track-by="value"
+                :valueProp="'value'"
+              />
+            </div>
+          </div>
+
           <!-- Boutons -->
           <div class="col-md-12">
             <div class="d-flex align-items-center">
@@ -130,13 +148,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as Yup from 'yup';
 import Multiselect from '@vueform/multiselect';
 import ApiService from '@/services/ApiService';
 import { error, success } from '@/utils/utils';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const KNOWN_TYPES = ['NAVIRE', 'AVION', 'AUTRES'];
 const fuelTypeOptions = [
@@ -160,6 +179,24 @@ export default defineComponent({
     const customTypeValue = ref('');
     const customTypeError = ref('');
 
+    // Organisation
+    const organisationOptions = ref<{ value: string; label: string }[]>([]);
+    const selectedOrganisationId = ref<string | null>(null);
+
+  const loadOrganisations = () => {
+  axios.get('http://localhost:3005/api/listOrganisations?page=1&limit=100')
+    .then(({ data }) => {
+      console.log('Organisations reçues:', data);
+      organisationOptions.value = data.data.data.map((org: any) => ({
+        value: org.id,
+        label: org.name,
+      }));
+      console.log('Options:', organisationOptions.value);
+    })
+    .catch((err) => {
+      console.error('Erreur:', err);
+    });
+};
     const transportSchema = Yup.object().shape({
       type: Yup.string().required('Le type est obligatoire'),
       identifier: Yup.string().required("L'identifiant est obligatoire"),
@@ -178,13 +215,17 @@ export default defineComponent({
     };
 
     const addTransportAsset = async (values: any) => {
-      // Validation manuelle du champ custom
       if (selectedType.value === 'AUTRES') {
         if (!customTypeValue.value.trim()) {
           customTypeError.value = 'Veuillez préciser le type de transport.';
           return;
         }
         values.type = customTypeValue.value.trim().toUpperCase();
+      }
+
+      // Ajout de l'organisationId si sélectionnée
+      if (selectedOrganisationId.value) {
+        values.organisationId = selectedOrganisationId.value;
       }
 
       isLoading.value = true;
@@ -195,6 +236,7 @@ export default defineComponent({
           transportForm.value?.resetForm();
           selectedType.value = null;
           customTypeValue.value = '';
+          selectedOrganisationId.value = null;
           router.push({ name: 'ListTransportAssetPage' });
         }
       } catch (err: any) {
@@ -203,6 +245,10 @@ export default defineComponent({
         isLoading.value = false;
       }
     };
+
+    onMounted(() => {
+      loadOrganisations();
+    });
 
     return {
       transportForm,
@@ -214,7 +260,9 @@ export default defineComponent({
       isLoading,
       onTypeChange,
       addTransportAsset,
-      fuelTypeOptions
+      fuelTypeOptions,
+      organisationOptions,
+      selectedOrganisationId,
     };
   },
 });
