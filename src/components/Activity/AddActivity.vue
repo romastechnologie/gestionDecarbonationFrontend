@@ -140,6 +140,20 @@
               <ErrorMessage name="fuelMassT" class="text-danger" />
             </div>
           </div>
+          <div class="col-md-6">
+            <div class="form-group mb-15 mb-sm-20 mb-md-25">
+              <label class="d-block text-black fw-semibold mb-10">Nombre de Passagers</label>
+              <div class="input-group">
+                <Field
+                  name="nbPassager"
+                  type="number"
+                  class="form-control shadow-none fs-md-15 text-black"
+                  placeholder="Entrer le nombre de passager"
+                />
+              </div>
+              <ErrorMessage name="nbPassager" class="text-danger" />
+            </div>
+          </div>
 
           <!-- Boutons -->
           <div class="col-md-12">
@@ -202,6 +216,7 @@ export default defineComponent({
       distanceKm: Yup.number().nullable().typeError('Valeur numérique invalide'),
       fuelMassT: Yup.number().nullable().typeError('Valeur numérique invalide'),
       fuelMassUnit: Yup.string().nullable(),
+      nbPassager: Yup.number().nullable()
     });
 
     onMounted(async () => {
@@ -247,6 +262,7 @@ export default defineComponent({
           cargoMassT: payload.cargoMassT ? Number(payload.cargoMassT) : undefined,
           distanceKm: payload.distanceKm ? Number(payload.distanceKm) : undefined,
           fuelMassT: payload.fuelMassT ? Number(payload.fuelMassT) : undefined,
+          nbPassager: payload.nbPassager ? Number(payload.nbPassager) : undefined,
           fuelMassUnit: payload.fuelMassUnit ?? undefined,
           installationFromId: payload.installationFromId,
           installationToId: payload.installationToId,

@@ -241,6 +241,7 @@ export default defineComponent({
     const changerStatut = async (id: string, statut: 'VALIDATED' | 'REJECTED') => {
       try {
         const { data } = await ApiService.put(`/modifierActivity/${id}`, { status: statut });
+        console.log('Réponse:', data);
         if (data.code === 200) {
           success(`Activité ${statut === 'VALIDATED' ? 'validée' : 'rejetée'} avec succès.`);
           getAllActivities(page.value, limit.value);

@@ -4,25 +4,6 @@
       <Form ref="activityForm" @submit="updateActivity" :validation-schema="activitySchema">
         <div class="row">
 
-          <!-- Mode -->
-          <div class="col-md-6">
-            <div class="form-group mb-15 mb-sm-20 mb-md-25">
-              <label class="d-block text-black fw-semibold mb-10">
-                Mode <span class="text-danger">*</span>
-              </label>
-              <Field name="mode" v-slot="{ field }">
-                <Multiselect
-                  :searchable="true"
-                  :options="modeOptions"
-                  v-model="field.value"
-                  v-bind="field"
-                  placeholder="Sélectionner le mode"
-                />
-              </Field>
-              <ErrorMessage name="mode" class="text-danger" />
-            </div>
-          </div>
-
           <!-- Statut -->
           <div class="col-md-6">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
@@ -178,6 +159,21 @@
               <ErrorMessage name="fuelMassT" class="text-danger" />
             </div>
           </div>
+          <div class="col-md-6">
+            <div class="form-group mb-15 mb-sm-20 mb-md-25">
+              <label class="d-block text-black fw-semibold mb-10">Nombre de Passagers</label>
+              <div class="input-group">
+                <Field
+                  name="nbPassager"
+                  type="number"
+                  class="form-control shadow-none fs-md-15 text-black"
+                  placeholder="Entrer le nombre de passager"
+                />
+        
+              </div>
+              <ErrorMessage name="nbPassager" class="text-danger" />
+            </div>
+          </div>
 
           <!-- Boutons -->
           <div class="col-md-12">
@@ -229,7 +225,6 @@ export default defineComponent({
     const transportOptions = ref<{ label: string; value: string }[]>([]);
 
     const activitySchema = Yup.object().shape({
-      mode: Yup.string().required('Le mode est obligatoire'),
       status: Yup.string().nullable(),
       installationFromId: Yup.string().nullable(),
       installationToId: Yup.string().nullable(),
@@ -243,6 +238,7 @@ export default defineComponent({
       distanceKm: Yup.number().nullable().typeError('Valeur numérique invalide'),
       fuelMassT: Yup.number().nullable().typeError('Valeur numérique invalide'),
       fuelMassUnit: Yup.string().nullable(),
+      nbPassager: Yup.string().nullable()
     });
 
     onMounted(async () => {
@@ -279,7 +275,7 @@ export default defineComponent({
           installationFromId: activity.installationFrom?.id ?? null,
           installationToId:   activity.installationTo?.id   ?? null,
           transportAssetId:   activity.transportAsset?.id   ?? null,
-          fuelMassUnit:       activity.fuelMassUnit ?? 'T', // ← valeur existante ou défaut
+          fuelMassUnit:       activity.fuelMassUnit ?? 'T',
         });
 
       } catch (err) {
@@ -302,13 +298,13 @@ export default defineComponent({
         };
 
         const finalPayload = {
-          mode:               payload.mode,
           status:             payload.status,
           periodStart:        formatDatetime(payload.periodStart),
           periodEnd:          formatDatetime(payload.periodEnd),
           cargoMassT:         payload.cargoMassT  ? Number(payload.cargoMassT)  : undefined,
           distanceKm:         payload.distanceKm  ? Number(payload.distanceKm)  : undefined,
           fuelMassT:          payload.fuelMassT   ? Number(payload.fuelMassT)   : undefined,
+          nbPassager:         payload.nbPassager   ? Number(payload.nbPassager)   : undefined,
           fuelMassUnit:       payload.fuelMassUnit ?? undefined,
           installationFromId: payload.installationFromId,
           installationToId:   payload.installationToId,
