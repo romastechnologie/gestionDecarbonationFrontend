@@ -4,61 +4,112 @@
       <Form ref="co2TariffForm" @submit="soumettre" :validation-schema="schema">
         <div class="row">
 
-          <!-- Type d'engin -->
           <div class="col-md-4">
             <div class="form-group mb-15 mb-sm-20 mb-md-25">
               <label class="d-block text-black fw-semibold mb-10">
-                Type d'engin <span class="text-danger">*</span>
+                Moyen de transport <span class="text-danger">*</span>
               </label>
-              <Field name="enginType" v-slot="{ field }">
+              <Field name="transport" v-slot="{ field }">
                 <Multiselect
-                  :searchable="true"
-                  :options="enginTypeOptions"
-                  v-model="selectedEnginType"
+                  :searchable="false"
+                  :options="transportOptions"
+                  v-model="selectedTransport"
                   v-bind="field"
-                  placeholder="Sélectionner le type"
-                  @change="onEnginChange"
+                  placeholder="Sélectionner le transport"
+                  @change="onTransportChange"
                 />
               </Field>
-              <ErrorMessage name="enginType" class="text-danger" />
+              <ErrorMessage name="transport" class="text-danger" />
             </div>
           </div>
 
-          <!-- ══ CHAMPS NAVIRE ══ -->
-          <template v-if="selectedEnginType === 'NAVIRE'">
+          <template v-if="selectedTransport === 'NAVIRE'">
+            <div class="col-md-4">
+              <div class="form-group mb-15 mb-sm-20 mb-md-25">
+                <label class="d-block text-black fw-semibold mb-10">
+                  Type de tarif <span class="text-danger">*</span>
+                </label>
+                <Field name="tariffType" v-slot="{ field }">
+                  <Multiselect
+                    :searchable="false"
+                    :options="navireTypeOptions"
+                    v-model="selectedNavireType"
+                    v-bind="field"
+                    placeholder="Sélectionner le type de tarif"
+                    @change="onNavireTypeChange"
+                  />
+                </Field>
+                <ErrorMessage name="tariffType" class="text-danger" />
+              </div>
+            </div>
+          </template>
 
-            <!-- Armateur -->
+          <template v-if="selectedTransport === 'AVION'">
+            <div class="col-md-4">
+              <div class="form-group mb-15 mb-sm-20 mb-md-25">
+                <label class="d-block text-black fw-semibold mb-10">
+                  Prix tonne carbone <span class="text-danger">*</span>
+                </label>
+                <Field name="prixCo2" type="number" step="0.0001" min="0"
+                  class="form-control shadow-none fs-md-15 text-black"
+                  placeholder="Ex: 85.00" />
+                <ErrorMessage name="prixCo2" class="text-danger" />
+              </div>
+            </div>
+          </template>
+
+          <template v-if="selectedTransport === 'NAVIRE' && selectedNavireType === 'BULK'">
+
+            <!-- Catégorie HS -->
+            <div class="col-md-4">
+              <div class="form-group mb-15 mb-sm-20 mb-md-25">
+                <label class="d-block text-black fw-semibold mb-10">
+                  Catégorie de marchandise <span class="text-danger">*</span>
+                </label>
+                <Field name="categoryId" v-slot="{ field }">
+                  <Multiselect
+                    :searchable="true"
+                    :options="categoryOptions"
+                    v-model="selectedCategoryId"
+                    v-bind="field"
+                    placeholder="Sélectionner la catégorie"
+                    label="label"
+                    track-by="value"
+                    :valueProp="'value'"
+                  />
+                </Field>
+                <ErrorMessage name="categoryId" class="text-danger" />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group mb-15 mb-sm-20 mb-md-25">
+                <label class="d-block text-black fw-semibold mb-10">
+                  Tarif carbone par tonne <span class="text-danger">*</span>
+                </label>
+                <Field name="amount" type="number" step="0.0001" min="0"
+                  class="form-control shadow-none fs-md-15 text-black"
+                  placeholder="Ex: 25.00" />
+                <ErrorMessage name="amount" class="text-danger" />
+              </div>
+            </div>
+
+          </template>
+
+          <template v-if="selectedTransport === 'NAVIRE' && selectedNavireType === 'CONTAINER'">
+
             <div class="col-md-4">
               <div class="form-group mb-15 mb-sm-20 mb-md-25">
                 <label class="d-block text-black fw-semibold mb-10">
                   Armateur <span class="text-danger">*</span>
                 </label>
-                <Field name="carrier" type="text" class="form-control shadow-none fs-md-15 text-black" placeholder="Ex: MSC, MAERSK" />
+                <Field name="carrier" type="text"
+                  class="form-control shadow-none fs-md-15 text-black"
+                  placeholder="Ex: MSC, MAERSK" />
                 <ErrorMessage name="carrier" class="text-danger" />
               </div>
             </div>
 
-            <!-- Code type conteneur -->
-            <div class="col-md-4">
-              <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">
-                  Code type conteneur <span class="text-danger">*</span>
-                </label>
-                <Field name="containerTypeCode" type="text" class="form-control shadow-none fs-md-15 text-black" placeholder="Ex: 20DRY, 40HC" />
-                <ErrorMessage name="containerTypeCode" class="text-danger" />
-              </div>
-            </div>
-
-            <!-- Libellé type conteneur -->
-            <div class="col-md-4">
-              <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">Libellé type conteneur</label>
-                <Field name="containerTypeLib" type="text" class="form-control shadow-none fs-md-15 text-black" placeholder="Ex: 20' Dry, 40' High Cube" />
-                <ErrorMessage name="containerTypeLib" class="text-danger" />
-              </div>
-            </div>
-
-            <!-- Région départ -->
             <div class="col-md-4">
               <div class="form-group mb-15 mb-sm-20 mb-md-25">
                 <label class="d-block text-black fw-semibold mb-10">
@@ -80,7 +131,6 @@
               </div>
             </div>
 
-            <!-- Région arrivée -->
             <div class="col-md-4">
               <div class="form-group mb-15 mb-sm-20 mb-md-25">
                 <label class="d-block text-black fw-semibold mb-10">
@@ -102,93 +152,61 @@
               </div>
             </div>
 
-            <!-- Unité de base -->
             <div class="col-md-4">
               <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">Unité de base</label>
-                <Field name="baseUnit" type="text" class="form-control shadow-none fs-md-15 text-black" placeholder="Ex: TEU, Conteneur" />
+                <label class="d-block text-black fw-semibold mb-10">
+                  Type de conteneur <span class="text-danger">*</span>
+                </label>
+                <Field name="containerTypeCode" v-slot="{ field }">
+                  <Multiselect
+                    :searchable="true"
+                    :options="containerTypeOptions"
+                    v-model="selectedContainerType"
+                    v-bind="field"
+                    placeholder="Sélectionner le type"
+                    label="label"
+                    track-by="value"
+                    :valueProp="'value'"
+                    @change="onContainerTypeChange"
+                  />
+                </Field>
+                <ErrorMessage name="containerTypeCode" class="text-danger" />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group mb-15 mb-sm-20 mb-md-25">
+                <label class="d-block text-black fw-semibold mb-10">
+                  Unité de base <span class="text-danger">*</span>
+                </label>
+                <Field name="baseUnit" v-slot="{ field }">
+                  <Multiselect
+                    :searchable="false"
+                    :options="baseUnitOptions"
+                    v-model="selectedBaseUnit"
+                    v-bind="field"
+                    placeholder="Sélectionner l'unité"
+                  />
+                </Field>
                 <ErrorMessage name="baseUnit" class="text-danger" />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group mb-15 mb-sm-20 mb-md-25">
+                <label class="d-block text-black fw-semibold mb-10">
+                  Tarif carbone par conteneur <span class="text-danger">*</span>
+                </label>
+                <Field name="amount" type="number" step="0.0001" min="0"
+                  class="form-control shadow-none fs-md-15 text-black"
+                  placeholder="Ex: 150.00" />
+                <ErrorMessage name="amount" class="text-danger" />
               </div>
             </div>
 
           </template>
 
-          <!-- ══ CHAMPS COMMUNS (visibles dès qu'un type est sélectionné) ══ -->
-          <template v-if="selectedEnginType !== ''">
-
-            <!-- Montant -->
-            <div class="col-md-4">
-              <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">
-                  {{ selectedEnginType === 'NAVIRE' ? 'Montant par conteneur' : 'Montant par tonne CO2' }}
-                  <span class="text-danger">*</span>
-                </label>
-                <Field name="amount" type="number" step="0.0001" min="0" class="form-control shadow-none fs-md-15 text-black" placeholder="Ex: 150.00" />
-                <ErrorMessage name="amount" class="text-danger" />
-              </div>
-            </div>
-
-            <!-- Devise -->
-            <div class="col-md-4">
-              <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">
-                  Devise <span class="text-danger">*</span>
-                </label>
-                <Field name="currencyId" v-slot="{ field }">
-                  <Multiselect
-                    :searchable="true"
-                    :options="currencyOptions"
-                    v-model="selectedCurrencyId"
-                    v-bind="field"
-                    placeholder="Sélectionner la devise"
-                    label="label"
-                    track-by="value"
-                    :valueProp="'value'"
-                  />
-                </Field>
-                <ErrorMessage name="currencyId" class="text-danger" />
-              </div>
-            </div>
-
-            <!-- Valide à partir du -->
-            <div class="col-md-4">
-              <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">
-                  Valide à partir du <span class="text-danger">*</span>
-                </label>
-                <Field name="validFrom" type="date" class="form-control shadow-none fs-md-15 text-black" />
-                <ErrorMessage name="validFrom" class="text-danger" />
-              </div>
-            </div>
-
-            <!-- Valide jusqu'au -->
-            <div class="col-md-4">
-              <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">Valide jusqu'au</label>
-                <Field name="validTo" type="date" class="form-control shadow-none fs-md-15 text-black" />
-                <ErrorMessage name="validTo" class="text-danger" />
-              </div>
-            </div>
-
-            <!-- Statut -->
-            <div class="col-md-4">
-              <div class="form-group mb-15 mb-sm-20 mb-md-25">
-                <label class="d-block text-black fw-semibold mb-10">Statut</label>
-                <div class="form-check form-switch mt-8">
-                  <input
-                    v-model="isActive"
-                    class="form-check-input"
-                    type="checkbox"
-                    id="isActive"
-                  />
-                  <label class="form-check-label text-black" for="isActive">
-                    {{ isActive ? 'Actif' : 'Inactif' }}
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <!-- Boutons -->
+          <template v-if="showCommonFields">
             <div class="col-md-12">
               <div class="d-flex align-items-center">
                 <button
@@ -207,7 +225,6 @@
                 </router-link>
               </div>
             </div>
-
           </template>
 
         </div>
@@ -217,7 +234,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, computed, onMounted } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as Yup from 'yup';
 import Multiselect from '@vueform/multiselect';
@@ -230,112 +247,192 @@ interface SelectOption {
   label: string;
 }
 
+const CONTAINER_TYPES: { value: string; label: string }[] = [
+  { value: '20DRY',  label: "20' Dry" },
+  { value: '40DRY',  label: "40' Dry" },
+  { value: '40HC',   label: "40' High Cube" },
+  { value: '20RF',   label: "20' Reefer" },
+  { value: '40RF',   label: "40' Reefer" },
+  { value: '20OT',   label: "20' Open Top" },
+  { value: '40OT',   label: "40' Open Top" },
+  { value: '20FR',   label: "20' Flat Rack" },
+  { value: '40FR',   label: "40' Flat Rack" },
+  { value: '45HC',   label: "45' High Cube" },
+];
+
+const BASE_UNITS = ['TEU', 'FEU', 'Conteneur', 'Unité'];
+
 export default defineComponent({
   name: 'AddCo2Tariff',
   components: { Form, Field, ErrorMessage, Multiselect },
   setup() {
-    const router       = useRouter();
+    const router        = useRouter();
     const co2TariffForm = ref<any>(null);
-    const isLoading    = ref(false);
-    const isActive     = ref(true);
+    const isLoading     = ref(false);
 
 
-    const enginTypeOptions = ['NAVIRE', 'AVION', 'AUTRES'];
-    const selectedEnginType    = ref<string>('');
-    const selectedRegionFromId = ref<string>('');
-    const selectedRegionToId   = ref<string>('');
-    const selectedCurrencyId   = ref<string>('');
+    const selectedTransport   = ref<string>('');
+    const selectedNavireType  = ref<string>('');
+
+    const selectedRegionFromId  = ref<string>('');
+    const selectedRegionToId    = ref<string>('');
+    const selectedCategoryId    = ref<string>('');
+    const selectedContainerType = ref<string>('');
+    const selectedBaseUnit      = ref<string>('');
+    const containerTypeLib      = ref<string>('');
 
     const regionOptions   = ref<SelectOption[]>([]);
-    const currencyOptions = ref<SelectOption[]>([]);
+    const categoryOptions = ref<SelectOption[]>([]);
 
-   
-    const schema = Yup.object().shape({
-      enginType:  Yup.string().required('Le type d\'engin est obligatoire'),
-      amount:     Yup.number().required('Le montant est obligatoire').min(0, 'Montant invalide'),
-      currencyId: Yup.string().required('La devise est obligatoire'),
-      validFrom:  Yup.date().required('La date de début est obligatoire').typeError('Date invalide'),
-      validTo:    Yup.date().nullable().typeError('Date invalide'),
+    const transportOptions   = ['AVION', 'NAVIRE'];
+    const navireTypeOptions  = [
+      { value: 'BULK',      label: 'Marchandises en vrac' },
+      { value: 'CONTAINER', label: 'Conteneur' },
+    ];
+    const containerTypeOptions = CONTAINER_TYPES;
+    const baseUnitOptions      = BASE_UNITS;
 
-      // Champs navire — requis seulement si NAVIRE
-      carrier: Yup.string().when('enginType', {
-        is: 'NAVIRE',
-        then: (s) => s.required('L\'armateur est obligatoire'),
-        otherwise: (s) => s.nullable(),
-      }),
-      containerTypeCode: Yup.string().when('enginType', {
-        is: 'NAVIRE',
-        then: (s) => s.required('Le code type conteneur est obligatoire'),
-        otherwise: (s) => s.nullable(),
-      }),
-      regionFromId: Yup.string().when('enginType', {
-        is: 'NAVIRE',
-        then: (s) => s.required('La région de départ est obligatoire'),
-        otherwise: (s) => s.nullable(),
-      }),
-      regionToId: Yup.string().when('enginType', {
-        is: 'NAVIRE',
-        then: (s) => s.required('La région d\'arrivée est obligatoire'),
-        otherwise: (s) => s.nullable(),
-      }),
-      containerTypeLib: Yup.string().nullable(),
-      baseUnit:         Yup.string().nullable(),
+    const showCommonFields = computed(() => {
+      if (selectedTransport.value === 'AVION') return true;
+      if (selectedTransport.value === 'NAVIRE' && selectedNavireType.value !== '') return true;
+      return false;
     });
 
-    // ── Chargement des données de référence ──────────────────────────────
+    const schema = computed(() =>
+      Yup.object().shape({
+        transport: Yup.string().required('Le moyen de transport est obligatoire'),
+
+        tariffType: Yup.string().when('transport', {
+          is: 'NAVIRE',
+          then: (s) => s.required('Le type de tarif est obligatoire'),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        prixCo2: Yup.number().when('transport', {
+          is: 'AVION',
+          then: (s) => s.required('Le prix carbone est obligatoire').min(0, 'Valeur invalide').typeError('Nombre requis'),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        amount: Yup.number().when('transport', {
+          is: 'NAVIRE',
+          then: (s) => s.required('Le montant est obligatoire').min(0, 'Valeur invalide').typeError('Nombre requis'),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        categoryId: Yup.string().when(['transport', 'tariffType'], {
+          is: (t: string, tt: string) => t === 'NAVIRE' && tt === 'BULK',
+          then: (s) => s.required('La catégorie est obligatoire'),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        carrier: Yup.string().when(['transport', 'tariffType'], {
+          is: (t: string, tt: string) => t === 'NAVIRE' && tt === 'CONTAINER',
+          then: (s) => s.required("L'armateur est obligatoire"),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        regionFromId: Yup.string().when(['transport', 'tariffType'], {
+          is: (t: string, tt: string) => t === 'NAVIRE' && tt === 'CONTAINER',
+          then: (s) => s.required('La région de départ est obligatoire'),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        regionToId: Yup.string().when(['transport', 'tariffType'], {
+          is: (t: string, tt: string) => t === 'NAVIRE' && tt === 'CONTAINER',
+          then: (s) => s.required("La région d'arrivée est obligatoire"),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        containerTypeCode: Yup.string().when(['transport', 'tariffType'], {
+          is: (t: string, tt: string) => t === 'NAVIRE' && tt === 'CONTAINER',
+          then: (s) => s.required('Le type de conteneur est obligatoire'),
+          otherwise: (s) => s.nullable(),
+        }),
+
+        baseUnit: Yup.string().when(['transport', 'tariffType'], {
+          is: (t: string, tt: string) => t === 'NAVIRE' && tt === 'CONTAINER',
+          then: (s) => s.required("L'unité de base est obligatoire"),
+          otherwise: (s) => s.nullable(),
+        }),
+
+
+      })
+    );
+
     const chargerDonnees = async () => {
       try {
-        const [ curRes] = await Promise.all([
-        //   ApiService.get('/getRegions'),
-          ApiService.get('/getCurrencies'),
+        const [regRes, catRes] = await Promise.all([
+          ApiService.get('/api/regions'),
+          ApiService.get('/api/all/categorieHs'),
         ]);
-        
-        // regionOptions.value   = regRes.data.data.map((r: any) => ({ value: r.id, label: r.name }));
-        currencyOptions.value = curRes.data.data.data.map((c: any) => ({ value: c.id, label: `${c.code} - ${c.name}` }));
-        console.log("ccc",currencyOptions.value)
+        regionOptions.value   = regRes.data.data.map((r: any) => ({ value: r.id, label: r.name }));
+        categoryOptions.value = catRes.data.data.map((c: any) => ({
+          value: c.id,
+          label: `${c.code} — ${c.productfr}`,
+        }));
       } catch (e) {
         error('Erreur lors du chargement des données de référence.');
       }
     };
 
-    // ── Reset à chaque changement de type ────────────────────────────────
-    const onEnginChange = (val: string) => {
-      selectedEnginType.value    = val;
+    const onTransportChange = (val: string) => {
+      selectedTransport.value   = val;
+      selectedNavireType.value  = '';
       selectedRegionFromId.value = '';
       selectedRegionToId.value   = '';
-      co2TariffForm.value?.resetForm({ values: { enginType: val } });
+      selectedCategoryId.value   = '';
+      selectedContainerType.value = '';
+      selectedBaseUnit.value      = '';
+      containerTypeLib.value      = '';
+      co2TariffForm.value?.resetForm({ values: { transport: val } });
     };
 
-    // ── Construction du payload ───────────────────────────────────────────
-    const construirePayload = (values: any) => {
-      const tariffTypeMap: Record<string, string> = {
-        NAVIRE: 'CONTAINER',
-        AVION:  'CARBON_PRICE',
-        AUTRES: 'CARBON_PRICE',
-      };
+    const onNavireTypeChange = (val: string) => {
+      selectedNavireType.value    = val;
+      selectedCategoryId.value    = '';
+      selectedContainerType.value = '';
+      selectedBaseUnit.value      = '';
+      containerTypeLib.value      = '';
+      co2TariffForm.value?.setFieldValue('tariffType', val);
+    };
 
-      const payload: Record<string, any> = {
-        tariffType:  tariffTypeMap[selectedEnginType.value],
-        amount:      values.amount,
-        currencyId:  selectedCurrencyId.value,
-        validFrom:   values.validFrom,
-        validTo:     values.validTo || null,
-        isActive:    isActive.value,
-      };
+    const onContainerTypeChange = (val: string) => {
+      const found = CONTAINER_TYPES.find((c) => c.value === val);
+      containerTypeLib.value = found ? found.label : '';
+      co2TariffForm.value?.setFieldValue('containerTypeCode', val);
+    };
 
-      if (selectedEnginType.value === 'NAVIRE') {
-        payload.carrier           = values.carrier;
-        payload.containerTypeCode = values.containerTypeCode;
-        payload.containerTypeLib  = values.containerTypeLib || null;
-        payload.baseUnit          = values.baseUnit || null;
-        payload.regionFromId      = selectedRegionFromId.value;
-        payload.regionToId        = selectedRegionToId.value;
+    const construirePayload = (values: any): Record<string, any> => {
+      const base = {};
+
+      if (selectedTransport.value === 'AVION') {
+        return { ...base, tariffType: 'CARBON_PRICE', prixCo2: values.prixCo2 };
       }
 
-      return payload;
+      if (selectedNavireType.value === 'BULK') {
+        return {
+          ...base,
+          tariffType: 'BULK',
+          categoryId: selectedCategoryId.value,
+          amount:     values.amount,
+        };
+      }
+
+      // CONTAINER
+      return {
+        ...base,
+        tariffType:        'CONTAINER',
+        carrier:           values.carrier,
+        regionFromId:      selectedRegionFromId.value,
+        regionToId:        selectedRegionToId.value,
+        containerTypeCode: selectedContainerType.value,
+        containerTypeLib:  containerTypeLib.value,
+        baseUnit:          selectedBaseUnit.value,
+        amount:            values.amount,
+      };
     };
 
-    // ── Soumission ────────────────────────────────────────────────────────
     const soumettre = async (values: any) => {
       try {
         isLoading.value = true;
@@ -345,15 +442,18 @@ export default defineComponent({
         if (data.code === 201) {
           success('Tarif CO2 enregistré avec succès.');
           co2TariffForm.value?.resetForm();
-          selectedEnginType.value    = '';
-          selectedRegionFromId.value = '';
-          selectedRegionToId.value   = '';
-          selectedCurrencyId.value   = '';
-          isActive.value             = true;
+          selectedTransport.value     = '';
+          selectedNavireType.value    = '';
+          selectedRegionFromId.value  = '';
+          selectedRegionToId.value    = '';
+          selectedCategoryId.value    = '';
+          selectedContainerType.value = '';
+          selectedBaseUnit.value      = '';
+          containerTypeLib.value      = '';
           router.push({ name: 'ListCo2TariffPage' });
         }
       } catch (err: any) {
-        error(err?.response?.data?.message || 'Erreur lors de l\'enregistrement.');
+        error(err?.response?.data?.message || "Erreur lors de l'enregistrement.");
       } finally {
         isLoading.value = false;
       }
@@ -365,15 +465,24 @@ export default defineComponent({
       co2TariffForm,
       schema,
       isLoading,
-      isActive,
-      enginTypeOptions,
-      selectedEnginType,
+      transportOptions,
+      navireTypeOptions,
+      containerTypeOptions,
+      baseUnitOptions,
+      selectedTransport,
+      selectedNavireType,
       selectedRegionFromId,
       selectedRegionToId,
-      selectedCurrencyId,
+      selectedCategoryId,
+      selectedContainerType,
+      selectedBaseUnit,
+      containerTypeLib,
       regionOptions,
-      currencyOptions,
-      onEnginChange,
+      categoryOptions,
+      showCommonFields,
+      onTransportChange,
+      onNavireTypeChange,
+      onContainerTypeChange,
       soumettre,
     };
   },
