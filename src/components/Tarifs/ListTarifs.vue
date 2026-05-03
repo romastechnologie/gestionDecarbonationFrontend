@@ -77,22 +77,33 @@
                   </span>
                   <ul class="dropdown-menu">
                     <li>
-                      <router-link
-                        class="dropdown-item d-flex align-items-center"
-                        :to="{ name: 'EditTarifsPage', params: { id: tariff.id } }"
-                      >
-                        <i class="flaticon-pen lh-1 me-8 position-relative top-1"></i>
-                        Modifier
-                      </router-link>
+                      
+                        <a  class="dropdown-item d-flex align-items-center"
+                        href="javascript:void(0);"
+                        @click="ouvrirDetails(tariff)"
+                        >
+                        <i class="flaticon-eye lh-1 me-8 position-relative top-1"></i>
+                        Détails
+                      </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center"
-                            href="javascript:void(0);"
-                            @click="suppression(tariff.id, tariffs, 'deleteCo2Tariff', 'un tarif CO2')"
+                        <router-link
+                            class="dropdown-item d-flex align-items-center"
+                            :to="{ name: 'EditTarifsPage', params: { id: tariff.id } }"
                         >
-                            <i class="flaticon-delete lh-1 me-8 position-relative top-1"></i>
-                            Supprimer
-                        </a>
+                            <i class="flaticon-pen lh-1 me-8 position-relative top-1"></i>
+                            Modifier
+                        </router-link>
+                    </li>
+                    <li>
+                      
+                        <a class="dropdown-item d-flex align-items-center"
+                        href="javascript:void(0);"
+                        @click="suppression(tariff.id, tariffs, 'deleteCo2Tariff', 'un tarif CO2')"
+                        >
+                        <i class="flaticon-delete lh-1 me-8 position-relative top-1"></i>
+                        Supprimer
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -114,6 +125,167 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade"
+    id="modalDetailsTariff"
+    tabindex="-1"
+    aria-labelledby="modalDetailsTariffLabel"
+    aria-hidden="true"
+    ref="modalRef"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 rounded-2">
+
+        <!-- En-tête -->
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title fw-semibold" id="modalDetailsTariffLabel">
+            <i class="flaticon-eye me-8"></i>
+            Détails du tarif CO2
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- Corps -->
+        <div class="modal-body p-25" v-if="tariffSelectionne">
+
+          <!-- Badge type + statut -->
+          <div class="d-flex align-items-center justify-content-between mb-20">
+            <span :class="badgeType(tariffSelectionne.tariffType)" style="font-size:14px;">
+              {{ labelType(tariffSelectionne.tariffType) }}
+            </span>
+            <span :class="tariffSelectionne.isActive ? 'badge bg-success text-white' : 'badge bg-danger text-white'" style="font-size:14px;">
+              {{ tariffSelectionne.isActive ? 'Actif' : 'Inactif' }}
+            </span>
+          </div>
+
+          <!-- Informations générales -->
+          <div class="card border mb-15">
+            <div class="card-header bg-light fw-semibold text-black py-10 px-15">
+              <i class="flaticon-information me-5"></i> Informations générales
+            </div>
+            <div class="card-body p-15">
+              <div class="row">
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Montant</span>
+                  <p class="fw-semibold text-black mb-0">
+                    {{ Number(tariffSelectionne.amount).toLocaleString('fr-FR', { minimumFractionDigits: 4 }) }}
+                    {{ tariffSelectionne.currency?.code ?? '' }}
+                  </p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Devise</span>
+                  <p class="fw-semibold text-black mb-0">
+                    {{ tariffSelectionne.currency?.code ?? '—' }} — {{ tariffSelectionne.currency?.name ?? '—' }}
+                  </p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Valide à partir du</span>
+                  <p class="fw-semibold text-black mb-0">{{ format_date(tariffSelectionne.validFrom) }}</p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Valide jusqu'au</span>
+                  <p class="fw-semibold text-black mb-0">
+                    {{ tariffSelectionne.validTo ? format_date(tariffSelectionne.validTo) : '—' }}
+                  </p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Créé le</span>
+                  <p class="fw-semibold text-black mb-0">{{ format_date(tariffSelectionne.createdAt) }}</p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Mis à jour le</span>
+                  <p class="fw-semibold text-black mb-0">{{ format_date(tariffSelectionne.updatedAt) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informations NAVIRE uniquement -->
+          <div
+            v-if="tariffSelectionne.tariffType === 'CONTAINER'"
+            class="card border mb-15"
+          >
+            <div class="card-header bg-light fw-semibold text-black py-10 px-15">
+              <i class="flaticon-cargo me-5"></i> Informations navire
+            </div>
+            <div class="card-body p-15">
+              <div class="row">
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Armateur</span>
+                  <p class="fw-semibold text-black mb-0">{{ tariffSelectionne.carrier ?? '—' }}</p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Code type conteneur</span>
+                  <p class="fw-semibold text-black mb-0">{{ tariffSelectionne.containerTypeCode ?? '—' }}</p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Libellé type conteneur</span>
+                  <p class="fw-semibold text-black mb-0">{{ tariffSelectionne.containerTypeLib ?? '—' }}</p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Unité de base</span>
+                  <p class="fw-semibold text-black mb-0">{{ tariffSelectionne.baseUnit ?? '—' }}</p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Région départ</span>
+                  <p class="fw-semibold text-black mb-0">{{ tariffSelectionne.regionFrom?.name ?? '—' }}</p>
+                </div>
+                <div class="col-md-6 mb-10">
+                  <span class="text-muted fs-13">Région arrivée</span>
+                  <p class="fw-semibold text-black mb-0">{{ tariffSelectionne.regionTo?.name ?? '—' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informations AVION / AUTRES -->
+          <div
+            v-if="tariffSelectionne.tariffType === 'CARBON_PRICE'"
+            class="card border mb-15"
+          >
+            <div class="card-header bg-light fw-semibold text-black py-10 px-15">
+              <i class="flaticon-airplane me-5"></i> Informations tarif carbone
+            </div>
+            <div class="card-body p-15">
+              <div class="row">
+                <div class="col-md-12 mb-10">
+                  <span class="text-muted fs-13">Prix par tonne de CO2</span>
+                  <p class="fw-semibold text-black mb-0">
+                    {{ Number(tariffSelectionne.amount).toLocaleString('fr-FR', { minimumFractionDigits: 4 }) }}
+                    {{ tariffSelectionne.currency?.code ?? '' }} / tCO2
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Pied -->
+        <!-- Pied -->
+        <div class="modal-footer" v-if="tariffSelectionne">
+        <router-link
+            :to="{ name: 'EditTarifsPage', params: { id: tariffSelectionne.id } }"
+            class="default-btn transition border-0 fw-medium text-white pt-10 pb-10 ps-25 pe-25 rounded-1 fs-md-15 bg-primary text-decoration-none"
+        >
+            <i class="flaticon-pen me-5"></i> Modifier
+        </router-link>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Fermer
+        </button>
+        </div>
+
+        <!-- Pied par défaut si pas de tarif sélectionné -->
+        <div class="modal-footer" v-else>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Fermer
+        </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -121,8 +293,10 @@ import { defineComponent, onMounted, ref } from 'vue';
 import ApiService from '@/services/ApiService';
 import { format_date, suppression, error } from '@/utils/utils';
 import PaginationComponent from '@/components/Utilities/Pagination.vue';
+import { Modal } from 'bootstrap';
 
 interface Currency { id: string; code: string; name: string; }
+interface Region   { id: string; name: string; code: string; }
 
 interface Co2Tariff {
   id: string;
@@ -132,22 +306,29 @@ interface Co2Tariff {
   validFrom: string;
   validTo: string | null;
   isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
   carrier?: string;
   containerTypeCode?: string;
-  regionFrom?: { id: string; name: string };
-  regionTo?: { id: string; name: string };
+  containerTypeLib?: string;
+  baseUnit?: string;
+  regionFrom?: Region;
+  regionTo?: Region;
 }
 
 export default defineComponent({
   name: 'ListCo2Tariff',
   components: { PaginationComponent },
   setup() {
-    const tariffs       = ref<Co2Tariff[]>([]);
-    const searchTerm    = ref('');
-    const page          = ref(1);
-    const totalPages    = ref(0);
-    const limit         = ref(10);
-    const totalElements = ref(0);
+    const tariffs           = ref<Co2Tariff[]>([]);
+    const searchTerm        = ref('');
+    const page              = ref(1);
+    const totalPages        = ref(0);
+    const limit             = ref(10);
+    const totalElements     = ref(0);
+    const tariffSelectionne = ref<Co2Tariff | null>(null);
+    const modalRef          = ref<HTMLElement | null>(null);
+    let   modalInstance: Modal | null = null;
 
     const getAllTariffs = (currentPage = 1, currentLimit = 10, mot = '') => {
       return ApiService.get(`/getCarbonTariffs?page=${currentPage}&limit=${currentLimit}&mot=${mot}`)
@@ -172,10 +353,17 @@ export default defineComponent({
       getAllTariffs(page.value, limit.value, searchTerm.value);
     };
 
-    // Badge couleur selon tariffType
+    const ouvrirDetails = (tariff: Co2Tariff) => {
+      tariffSelectionne.value = tariff;
+      if (!modalInstance && modalRef.value) {
+        modalInstance = new Modal(modalRef.value);
+      }
+      modalInstance?.show();
+    };
+
     const badgeType = (type: string) => ({
-      'badge bg-info text-white':    type === 'CONTAINER',
-      'badge bg-warning text-white': type === 'CARBON_PRICE',
+      'badge bg-info text-white':      type === 'CONTAINER',
+      'badge bg-warning text-white':   type === 'CARBON_PRICE',
       'badge bg-secondary text-white': type === 'BULK',
     });
 
@@ -192,8 +380,10 @@ export default defineComponent({
 
     return {
       tariffs, searchTerm, page, totalPages, limit, totalElements,
+      tariffSelectionne, modalRef,
       format_date, suppression,
-      handlePaginate, rechercher, badgeType, labelType,
+      handlePaginate, rechercher,
+      ouvrirDetails, badgeType, labelType,
     };
   },
 });
