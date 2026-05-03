@@ -219,6 +219,9 @@ import DetailsActivityPage from "@/pages/Activity/DetailsActivityPage.vue";
 import AddCurrencyPage from "@/pages/Currency/AddCurrencyPage.vue";
 import ListCurrencyPage from "@/pages/Currency/ListCurrencyPage.vue";
 import ListCurrencyRatePage from "@/pages/CurrencyRate/ListCurrencyRatePage.vue";
+import AddTarifsPage from "@/pages/Tarifs/AddTarifsPage.vue";
+import EditTarifsPage from "@/pages/Tarifs/EditTarifsPage.vue";
+import ListTarifsPage from "@/pages/Tarifs/ListTarifsPage.vue";
 
 
 const routes = [
@@ -817,6 +820,21 @@ const routes = [
         path: "/listCurrencyRate",
         name: "ListCurrencyRatePage",
         component: ListCurrencyRatePage,
+      },
+      {
+        path: "/addtarifs",
+        name: "AddTarifsPage",
+        component:AddTarifsPage,
+      },
+      {
+        path: "/edittarifs/:id",
+        name: "EditTarifsPage",
+        component:EditTarifsPage,
+      },
+      {
+        path: "/listtarifs",
+        name: "ListTarifsPage",
+        component:ListTarifsPage,
       }
     ],
   },

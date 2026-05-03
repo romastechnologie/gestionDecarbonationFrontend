@@ -192,6 +192,11 @@
                     Taux de changes
                   </router-link>
                 </li>
+                <li class="sidebar-sub-menu-item">
+                  <router-link to="/listtarifs" class="sidebar-sub-menu-link">
+                    Tarifs
+                  </router-link>
+                </li>
               </ul>
             </div>
           </div>

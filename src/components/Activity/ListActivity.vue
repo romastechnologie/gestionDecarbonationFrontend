@@ -68,7 +68,7 @@
             <tr v-for="(activity, index) in activities" :key="index">
               <td class="shadow-none lh-1 fw-medium text-black-emphasis">
                 <span class='badge bg-info text-white'>
-                  {{  activity.transportAsset.name}}
+                  {{  activity.transportAsset?.name}}
                 </span>
               </td>
               <td class="shadow-none lh-1 fw-medium">
@@ -198,6 +198,8 @@ interface Activity {
   fuelMassT: number | null;
   fuelMassUnit: string | null;
   createdAt: string;
+  nbPassager:number | null;
+  CO2Emis:number | null;
 }
 
 export default defineComponent({

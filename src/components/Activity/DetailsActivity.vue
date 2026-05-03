@@ -77,8 +77,8 @@
             <div class="col-md-3"><label class="text-muted fs-12">Masse cargo</label><p class="fw-semibold">{{ activity.cargoMassT != null ? activity.cargoMassT + ' T' : '—' }}</p></div>
             <div class="col-md-3"><label class="text-muted fs-12">Distance</label><p class="fw-semibold">{{ activity.distanceKm != null ? activity.distanceKm + ' km' : '—' }}</p></div>
             <div class="col-md-3"><label class="text-muted fs-12">Masse carburant</label><p class="fw-semibold">{{ activity.fuelMassT != null ? activity.fuelMassT + ''+ activity.fuelMassUnit : '—' }}</p></div>
-            <div class="col-md-3"><label class="text-muted fs-12">Nombre de Passagers</label><p class="fw-semibold">{{ activity.nbPassager != null ? activity.nbPassager : '—' }}</p></div>
-            <div class="col-md-3"><label class="text-muted fs-12">Quantité de CO2 émis</label><p class="fw-semibold">{{ activity.CO2Emis != null ? activity.CO2Emis + ''+ "Kg" : '—' }}</p></div>
+            <div class="col-md-3"><label class="text-muted fs-12">Nombre de Passagers</label><p class="fw-semibold">{{ activity?.nbPassager != null ? activity?.nbPassager : '—' }}</p></div>
+            <div class="col-md-3"><label class="text-muted fs-12">Quantité de CO2 émis</label><p class="fw-semibold">{{ activity.CO2Emis != null ? activity?.CO2Emis + ''+ "Kg" : '—' }}</p></div>
           </div>
         </div>
 

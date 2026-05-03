@@ -160,7 +160,7 @@ export default defineComponent({
     const totalElements = ref(0);
 
     const getAllTransports = (currentPage = 1, currentLimit = 10, search = '') => {
-      return axios.get(`${BASE_URL}/listTransports?page=${currentPage}&limit=${currentLimit}&mot=${search}`)
+      return axios.get(`/listTransports?page=${currentPage}&limit=${currentLimit}&mot=${search}`)
         .then(({ data }) => {
           console.log('Transports reçus:', data.data.data[0]); // voir le premier transport complet
           transports.value = data.data.data;
